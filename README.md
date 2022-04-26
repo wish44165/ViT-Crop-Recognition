@@ -105,7 +105,7 @@ ls -l | grep "^-" | wc -l    # Check the number of files
 │   │   │   ├── banana/ bareland/ carrot/ ...
 │   │   ├── val/
 │   │   │   ├── banana/ bareland/ carrot/ ...
-├── ~ ViT-Crop-Recognition/
+├── ViT-Crop-Recognition/
 │   ├── apex/
 │   ├── checkpoint/
 │   ├── models/
@@ -182,8 +182,8 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
     <td>scheduler = WarmupCosineSchedule(optimizer, warmup_steps=args.warmup_steps, t_total=t_total)</td>
     <td>RandomResizedCrop(416)</td>
     <td>9900 (iter)</td>
-    <td>86.05 </td>
-    <td>77.18 </td>
+    <td>97.70 </td>
+    <td>97.81 </td>
     <td>>9hr 3min </td>
   </tr>
 
