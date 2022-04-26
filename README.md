@@ -132,8 +132,8 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
 
 
 
-## (Google Drive)[https://drive.google.com/drive/folders/1dOIBsU-zn1JYotF7JEbUyBPG6o2qImyy]
-## (HackMD)[https://hackmd.io/@x-eSC_X5SMuQbmfwqUOwsQ/ryaRo42Mq]
+## [Google Drive](https://drive.google.com/drive/folders/1dOIBsU-zn1JYotF7JEbUyBPG6o2qImyy)
+## [HackMD](https://hackmd.io/@x-eSC_X5SMuQbmfwqUOwsQ/ryaRo42Mq)
 
 
 
