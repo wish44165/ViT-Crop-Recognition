@@ -132,6 +132,11 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
 
 
 
+## (Google Drive)[https://drive.google.com/drive/folders/1dOIBsU-zn1JYotF7JEbUyBPG6o2qImyy]
+## (HackMD)[https://hackmd.io/@x-eSC_X5SMuQbmfwqUOwsQ/ryaRo42Mq]
+
+
+
 
 ## Experimental results
 
@@ -243,7 +248,7 @@ Coming ...
 ```
 @article{
     title  = {Crop classification},
-    author = {Yu-Hsi Chen, Kuan-Wei ZengYu-Kai Chen},
+    author = {Yu-Hsi Chen, Kuan-Wei Zeng, Yu-Kai Chen},
     url    = {https://github.com/TW-yuhsi/ViT-Crop-Recognition},
     year   = {2022}
 }
