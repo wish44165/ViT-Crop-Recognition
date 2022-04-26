@@ -1,5 +1,6 @@
-# 農地作物現況調查影像辨識競賽 - 春季賽:AI作物影響判釋
-ViT - Crop Recognition
+# ViT - Crop Recognition
+農地作物現況調查影像辨識競賽 - 春季賽:AI作物影響判釋
+
 
 
 ## Setup
