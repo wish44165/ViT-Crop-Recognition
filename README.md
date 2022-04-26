@@ -158,7 +158,7 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
     <td>training time</td>
   </tr>
   <tr>
-    <td>04-14</td>
+    <td>2022-04-14</td>
     <td>ResNet101</td>
     <td>fold4</td>
     <td>16</td>
@@ -173,7 +173,7 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
     <td>>1hr </td>
   </tr>
   <tr>
-    <td>04-17</td>
+    <td>2022-04-17</td>
     <td>ViT-B_16</td>
     <td>fold4</td>
     <td>8</td>
