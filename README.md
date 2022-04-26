@@ -96,6 +96,7 @@ ls -l | grep "^-" | wc -l    # Check the number of files
 
 
 ## Folder Structure
+```
 ├── data/
 │   ├── fold1/
 │   │   ├── test/
@@ -111,7 +112,7 @@ ls -l | grep "^-" | wc -l    # Check the number of files
 │   ├── requirements.txt
 │   ├── train.py
 │   ├── utils
-
+```
 
 
 
@@ -218,12 +219,15 @@ Coming ...
 
 
 ## GitHub Acknowledgement
-### Augmentation
-- AutoAugment: https://github.com/DeepVoltaire/AutoAugment
-### Optimizer
-- Ranger21: https://github.com/lessw2020/Ranger21 
-### Loss function
-- FLSD: https://github.com/torrvision/focal_calibration  
+- Augmentation
+  - AutoAugment: https://github.com/DeepVoltaire/AutoAugment
+- Optimizer
+  - Ranger: https://github.com/lessw2020/Ranger-Deep-Learning-Optimizer
+  - Ranger21: https://github.com/lessw2020/Ranger21 
+  - SAM: https://github.com/davda54/sam
+- Loss function
+  - MCCE: https://github.com/Kurumi233/Mutual-Channel-Loss
+  - FLSD: https://github.com/torrvision/focal_calibration
 
 
 
@@ -236,7 +240,7 @@ Coming ...
 
 ## Citation
 ```
-@misc{
+@article{
     title  = {Crop classification},
     author = {Yu-Hsi Chen},
     url    = {https://github.com/TW-yuhsi/ViT-Crop-Recognition},
