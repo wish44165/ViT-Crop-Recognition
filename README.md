@@ -144,7 +144,7 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
   <tr>
     <td>Checkpoint</td>
     <td>Model</td>
-    <td>Dataset</td
+    <td>Dataset</td>
     <td>Batch size</td>
     <td>Epochs</td>
     <td>Loss</td>
