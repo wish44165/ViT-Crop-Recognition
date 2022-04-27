@@ -160,14 +160,14 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
     <td>Scheduler</td>
     <td>Augmentation</td>
     <td>Best val epoch</td>
-    <td>Best val acc</td>
-    <td>test acc</td>
+    <td>Best val acc (%)</td>
+    <td>test acc (%)</td>
     <td>training time</td>
   </tr>
   <tr>
     <td>2022-04-07</td>
     <td>ResNet101</td>
-    <td>fold4</td>
+    <td>1K</td>
     <td>32</td>
     <td>60</td>
     <td>CE</td>
@@ -205,8 +205,8 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
     <td>Scheduler</td>
     <td>Augmentation</td>
     <td>Best val epoch</td>
-    <td>Best val acc</td>
-    <td>test acc</td>
+    <td>Best val acc (%)</td>
+    <td>test acc (%)</td>
     <td>training time</td>
   </tr>
   <tr>
