@@ -295,7 +295,7 @@ Coming ...
 ```
 @article{
     title  = {Crop classification},
-    author = {Yu-Hsi Chen, Kuan-Wei Zeng, Yu-Kai Chen, Tseng Yang},
+    author = {Yu-Hsi Chen, Jiun-Han Chen, Yu-Kai Chen, Kuan-Wei Zeng, Yang Tseng},
     url    = {https://github.com/TW-yuhsi/ViT-Crop-Recognition},
     year   = {2022}
 }
