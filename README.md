@@ -141,6 +141,53 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
 ## Experimental results
 
 
+
+
+<details>
+
+<summary>Toy example</summary>
+
+  
+<table>
+  <tr>
+    <td>Checkpoint</td>
+    <td>Model</td>
+    <td>Dataset</td>
+    <td>Batch size</td>
+    <td>Epochs</td>
+    <td>Loss</td>
+    <td>Optimizer</td>
+    <td>Scheduler</td>
+    <td>Augmentation</td>
+    <td>Best val epoch</td>
+    <td>Best val acc</td>
+    <td>test acc</td>
+    <td>training time</td>
+  </tr>
+  <tr>
+    <td>2022-04-07</td>
+    <td>ResNet101</td>
+    <td>fold4</td>
+    <td>32</td>
+    <td>60</td>
+    <td>CE</td>
+    <td>optimizer = optim.SGD(model.parameters(), lr=0.05)</td>
+    <td>step_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)</td>
+    <td>RandomResizedCrop(416),<br>Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))</td>
+    <td> </td>
+    <td>84 </td>
+    <td> </td>
+    <td>2hr 41min </td>
+  </tr>
+
+</table>
+
+
+</details>
+
+
+
+
 <details>
 
 <summary>Training Phase</summary>
