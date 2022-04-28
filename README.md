@@ -165,7 +165,7 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
     <td>training time</td>
   </tr>
   <tr>
-    <td>2022-04-07</td>
+    <td>2022-04-09</td>
     <td>ResNet101</td>
     <td>1K</td>
     <td>32</td>
@@ -210,9 +210,9 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
     <td>training time</td>
   </tr>
   <tr>
-    <td>2022-04-14</td>
+    <td>2022-04-18</td>
     <td>ResNet101</td>
-    <td>fold4</td>
+    <td>fold1</td>
     <td>16</td>
     <td>1</td>
     <td>CE</td>
@@ -225,7 +225,7 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
     <td>>1hr </td>
   </tr>
   <tr>
-    <td>2022-04-17</td>
+    <td>2022-04-21</td>
     <td>ViT-B_16</td>
     <td>fold4</td>
     <td>8</td>
@@ -233,11 +233,26 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
     <td>CE</td>
     <td>optimizer = torch.optim.SGD(model.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)</td>
     <td>scheduler = WarmupCosineSchedule(optimizer, warmup_steps=args.warmup_steps, t_total=t_total)</td>
-    <td>RandomResizedCrop(416)</td>
+    <td>RandomResizedCrop(384)</td>
     <td>9900 (iter)</td>
     <td>97.70 </td>
     <td>97.81 </td>
     <td>>9hr 3min </td>
+  </tr>
+  <tr>
+    <td>2022-04-27</td>
+    <td>ViT-B_16</td>
+    <td>fold1</td>
+    <td>8</td>
+    <td>40000 (iter)</td>
+    <td>CE</td>
+    <td>optimizer = torch.optim.SGD(model.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)</td>
+    <td>scheduler = WarmupCosineSchedule(optimizer, warmup_steps=args.warmup_steps, t_total=t_total)</td>
+    <td>RandomResizedCrop(384)</td>
+    <td>31200 (iter)</td>
+    <td>98.73 </td>
+    <td>98.64 </td>
+    <td>>1d 13hr 50min </td>
   </tr>
 
 </table>
