@@ -139,6 +139,11 @@ python3 train.py --name Crop --dataset Crop --train_batch_size 8 --img_size 384 
 python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoint.bin --img_size 384
 ```
 
+## Ensemble
+```bash=
+python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["results/fold1/ViT-B_16_1/Crop_ViT-B_16_checkpoint.bin","results/fold1/ViT-B_16_1/Crop_ViT-B_16_checkpoint.bin"] --img_size [384,384]
+```
+
 
 
 ## [Google Drive](https://drive.google.com/drive/folders/1dOIBsU-zn1JYotF7JEbUyBPG6o2qImyy)
