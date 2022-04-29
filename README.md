@@ -149,7 +149,7 @@ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoi
 
 ## Ensemble
 ```bash=
-python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["results/fold1/ViT-B_16_1/Crop_ViT-B_16_checkpoint.bin","results/fold1/ViT-B_16_1/Crop_ViT-B_16_checkpoint.bin"] --img_size [384,384]
+python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["results/fold1/ViT-B_16_1/Crop_ViT-B_16_checkpoint.bin","results/fold1/ViT-B_16_2/Crop_ViT-B_16_checkpoint.bin"] --img_size [384,384]
 ```
 
 
