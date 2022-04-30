@@ -135,12 +135,27 @@ ls -l | grep "^-" | wc -l    # Check the number of files
 
 
 ## Train
+
+Users can split the dataset into `train`, `val`, and `test` folders, as shown in the [Folder Structure](#folder-structure) section in advance, or use the un-split dataset with the CSV files recording the train/val data.
+
+1. The training command using the split dataset:
 ```bash=
 python3 train.py --name Crop --dataset Crop --train_batch_size 8 --img_size 384 --model_type ViT-B_16 --pretrained_dir checkpoint/ViT-B_16.npz --fp16 --fp16_opt_level O2
 ```
-
-
-
+2. The training command using the un-split dataset with the CSV files:
+```bash=
+python3 train.py --name Crop \
+                 --train_batch_size 8 \
+                 --img_size 384 \
+                 --model_type ViT-B_16 \
+                 --pretrained_dir checkpoint/ViT-B_16.npz \
+                 --fp16 --fp16_opt_level O2 \
+                 
+                 --dataset Crop_CSV \
+                 --path_csv_train <path of csv_train> \
+                 --path_csv_val <path of csv_val>  \
+                 --dir_dataset <directory of the dataset> 
+```
 
 ## Inference
 ```bash=
