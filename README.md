@@ -278,7 +278,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
     <td>9900 (iter)</td>
     <td>97.70 </td>
     <td>97.81 </td>
-    <td>>9hr 3min </td>
+    <td>9hr 3min </td>
   </tr>
   <tr>
     <td>2022-04-27</td>
@@ -294,7 +294,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
     <td>31200 (iter)</td>
     <td>98.73 </td>
     <td>98.64 </td>
-    <td>>1d 13hr 50min </td>
+    <td>1d 13hr 50min </td>
   </tr>
   <tr>
     <td>2022-04-29</td>
@@ -307,10 +307,10 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
     <td>optimizer = torch.optim.SGD(model.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)</td>
     <td>scheduler = WarmupCosineSchedule(optimizer, warmup_steps=args.warmup_steps, t_total=t_total)</td>
     <td>RandomResizedCrop(384)</td>
-    <td>31200 (iter)</td>
+    <td>38500 (iter)</td>
     <td>98.74 </td>
     <td>98.74 </td>
-    <td>>1d 13hr 57min </td>
+    <td>1d 13hr 57min </td>
   </tr>
 
 </table>
