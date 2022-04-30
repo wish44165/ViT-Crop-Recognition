@@ -5,10 +5,51 @@ import torch
 
 from torchvision import transforms, datasets
 from torch.utils.data import DataLoader, RandomSampler, DistributedSampler, SequentialSampler
-
+import pandas as pd
+import PIL.Image as Image
 
 logger = logging.getLogger(__name__)
 
+class Dataset_SplitByCSV(torch.utils.data.Dataset):
+    def __init__(self, root_dataset, path_csv, transform=None):
+        super().__init__()
+        self.className2idx = {
+            'banana': 0, 
+            'bareland': 1,
+            'carrot': 2,
+            'corn': 3,
+            'dragonfruit': 4,
+            'garlic': 5,
+            'guava': 6,
+            'inundated': 7,
+            'peanut': 8,
+            'pineapple': 9,
+            'pumpkin': 10,
+            'rice': 11,
+            'soybean': 12,
+            'sugarcane': 13,
+            'tomato': 14 
+        }
+
+        df = pd.read_csv(path_csv, header=None)
+        df.info()
+        self.list_datapair = df.values
+        self.transform = transform
+        self.root_dataset = root_dataset
+        self.len = len(self.list_datapair)
+
+    def __getitem__(self, index):
+        data_path = os.path.join(self.root_dataset, self.list_datapair[index][1], self.list_datapair[index][0])
+        img = Image.open(data_path)
+        img.convert('RGB')
+        if self.transform != None:
+            img = self.transform(img)
+        label = torch.tensor(self.className2idx[self.list_datapair[index][1]])
+        data = (img, label)
+        return data
+
+    def __len__(self):
+        return self.len
 
 def get_loader(args):
     if args.local_rank not in [-1, 0]:
@@ -45,8 +86,11 @@ def get_loader(args):
                                     download=True,
                                     transform=transform_test) if args.local_rank in [-1, 0] else None
 
+    elif args.dataset == "Crop_CSV":
+        trainset = Dataset_SplitByCSV(args.dir_dataset, path_csv=args.path_csv_train, transform=transform_train)
+        testset = Dataset_SplitByCSV(args.dir_dataset, path_csv=args.path_csv_val, transform=transform_test)
     else:
-        data_dir = '../data/fold1'
+        data_dir = args.dir_dataset
         trainset = datasets.ImageFolder(os.path.join(data_dir, 'train'), transform=transform_train)
         testset = datasets.ImageFolder(os.path.join(data_dir, 'val'), transform=transform_test)
         

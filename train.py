@@ -82,7 +82,7 @@ def setup(args):
 
 def count_parameters(model):
     params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    return params/1000000
+    return params/save
 
 
 def set_seed(args):
@@ -279,7 +279,7 @@ def main():
     # Required parameters
     parser.add_argument("--name", required=True,
                         help="Name of this run. Used for monitoring.")
-    parser.add_argument("--dataset", choices=["cifar10", "cifar100", 'Crop'], default="Crop",
+    parser.add_argument("--dataset", choices=["cifar10", "cifar100", 'Crop', "Crop_CSV"], default="Crop",
                         help="Which downstream task.")
     parser.add_argument("--model_type", choices=["ViT-B_16", "ViT-B_32", "ViT-L_16",
                                                  "ViT-L_32", "ViT-H_14", "R50-ViT-B_16"],
@@ -338,6 +338,12 @@ def main():
                         help="Loss scaling to improve fp16 numeric stability. Only used when fp16 set to True.\n"
                              "0 (default value): dynamic loss scaling.\n"
                              "Positive power of 2: static loss scaling value.\n")
+    parser.add_argument('--dir_dataset', type=str, default='../data/fold1',
+                        help="The directory storing the dataset")
+    parser.add_argument('--path_csv_train', type=str, default='/work/kevin8ntust/data/crop_data/seperate_csv/fold1_train.csv',
+                        help="The path of the csv file recording the training data.")
+    parser.add_argument('--path_csv_val', type=str, default='/work/kevin8ntust/data/crop_data/seperate_csv/fold1_test.csv',
+                        help="The path of the csv file recording the validation data.")    
     args = parser.parse_args()
 
     # Setup CUDA, GPU & distributed training
