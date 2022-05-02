@@ -82,7 +82,7 @@ def setup(args):
 
 def count_parameters(model):
     params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    return params/save
+    return params/1000000
 
 
 def set_seed(args):

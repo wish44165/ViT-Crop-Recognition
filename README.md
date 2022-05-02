@@ -150,7 +150,6 @@ python3 train.py --name Crop \
                  --model_type ViT-B_16 \
                  --pretrained_dir checkpoint/ViT-B_16.npz \
                  --fp16 --fp16_opt_level O2 \
-                 
                  --dataset Crop_CSV \
                  --path_csv_train <path of csv_train> \
                  --path_csv_val <path of csv_val>  \
@@ -189,6 +188,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   <tr>
     <td>Checkpoint</td>
     <td>Model</td>
+    <td>Pretrained</td>
     <td>Dataset</td>
     <td>Batch size</td>
     <td>Epochs</td>
@@ -204,6 +204,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   <tr>
     <td>2022-04-09</td>
     <td>ResNet101</td>
+    <td>imagenet</td>
     <td>1K</td>
     <td>32</td>
     <td>60</td>
@@ -234,6 +235,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   <tr>
     <td>Checkpoint</td>
     <td>Model</td>
+    <td>Pretrained</td>
     <td>Dataset</td>
     <td>Batch size</td>
     <td>Epochs</td>
@@ -249,6 +251,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   <tr>
     <td>2022-04-18</td>
     <td>ResNet101</td>
+    <td>imagenet</td>
     <td>fold1</td>
     <td>16</td>
     <td>1</td>
@@ -264,6 +267,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   <tr>
     <td>2022-04-21</td>
     <td>ViT-B_16</td>
+    <td>imagenet21k</td>
     <td>fold4</td>
     <td>8</td>
     <td>10000 (iter)</td>
@@ -274,11 +278,12 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
     <td>9900 (iter)</td>
     <td>97.70 </td>
     <td>97.81 </td>
-    <td>>9hr 3min </td>
+    <td>9hr 3min </td>
   </tr>
   <tr>
     <td>2022-04-27</td>
     <td>ViT-B_16</td>
+    <td>imagenet21k</td>
     <td>fold1</td>
     <td>8</td>
     <td>40000 (iter)</td>
@@ -289,7 +294,23 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
     <td>31200 (iter)</td>
     <td>98.73 </td>
     <td>98.64 </td>
-    <td>>1d 13hr 50min </td>
+    <td>1d 13hr 50min </td>
+  </tr>
+  <tr>
+    <td>2022-04-29</td>
+    <td>ViT-B_16</td>
+    <td>imagenet21k+imagenet2012</td>
+    <td>fold1</td>
+    <td>8</td>
+    <td>40000 (iter)</td>
+    <td>CE</td>
+    <td>optimizer = torch.optim.SGD(model.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)</td>
+    <td>scheduler = WarmupCosineSchedule(optimizer, warmup_steps=args.warmup_steps, t_total=t_total)</td>
+    <td>RandomResizedCrop(384)</td>
+    <td>38500 (iter)</td>
+    <td>98.74 </td>
+    <td>98.74 </td>
+    <td>1d 13hr 57min </td>
   </tr>
 
 </table>
