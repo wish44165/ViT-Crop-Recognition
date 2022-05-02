@@ -11,7 +11,7 @@ import PIL.Image as Image
 logger = logging.getLogger(__name__)
 
 class Dataset_SplitByCSV(torch.utils.data.Dataset):
-    def __init__(self, root_dataset, path_csv, transform=None):
+    def __init__(self, root_dataset, path_csv, transform=None, return_file_name=False):
         super().__init__()
         self.className2idx = {
             'banana': 0, 
@@ -37,6 +37,7 @@ class Dataset_SplitByCSV(torch.utils.data.Dataset):
         self.transform = transform
         self.root_dataset = root_dataset
         self.len = len(self.list_datapair)
+        self.return_file_name = return_file_name
 
     def __getitem__(self, index):
         data_path = os.path.join(self.root_dataset, self.list_datapair[index][1], self.list_datapair[index][0])
@@ -45,7 +46,11 @@ class Dataset_SplitByCSV(torch.utils.data.Dataset):
         if self.transform != None:
             img = self.transform(img)
         label = torch.tensor(self.className2idx[self.list_datapair[index][1]])
-        data = (img, label)
+        if self.return_file_name:
+            file_name_prefix = self.list_datapair[index][0][:self.list_datapair[index][0].rfind('.')]
+            data = (img, label, self.list_datapair[index][1], file_name_prefix)
+        else:
+            data = (img, label)
         return data
 
     def __len__(self):
@@ -111,3 +116,15 @@ def get_loader(args):
                              pin_memory=True) if testset is not None else None
 
     return train_loader, test_loader
+
+def get_attn_loader(cfg):
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+    ])
+    dataset = Dataset_SplitByCSV(cfg['directory']['data']['root-dir'], 
+                                 cfg['directory']['data']['path-csv'],
+                                 transform=transform,
+                                 return_file_name=True)
+    dataloader = DataLoader(dataset, 1, False)
+    return dataloader
