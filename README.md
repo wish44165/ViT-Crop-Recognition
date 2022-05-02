@@ -2,10 +2,12 @@
 農地作物現況調查影像辨識競賽 - 春季賽:AI作物影響判釋
 
 
+### [Competitoin Link](https://aidea-web.tw/topic/93c8c26b-0e96-44bc-9a53-1c96353ad340)
+### [Google Drive](https://drive.google.com/drive/folders/1dOIBsU-zn1JYotF7JEbUyBPG6o2qImyy)
+### [HackMD](https://hackmd.io/@x-eSC_X5SMuQbmfwqUOwsQ/ryaRo42Mq)
+
 
 ## Setup
-
-
 
 
 <details>
@@ -167,9 +169,6 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
 ```
 
 
-
-## [Google Drive](https://drive.google.com/drive/folders/1dOIBsU-zn1JYotF7JEbUyBPG6o2qImyy)
-## [HackMD](https://hackmd.io/@x-eSC_X5SMuQbmfwqUOwsQ/ryaRo42Mq)
 
 
 
