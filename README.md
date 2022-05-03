@@ -311,6 +311,22 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
     <td>98.74 </td>
     <td>1d 13hr 57min </td>
   </tr>
+  <tr>
+    <td>2022-05-03</td>
+    <td>ViT-B_16</td>
+    <td>imagenet21k+imagenet2012</td>
+    <td>fold1</td>
+    <td>8</td>
+    <td>10000 (iter)</td>
+    <td>CE</td>
+    <td>optimizer = torch.optim.SGD(model.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=args.weight_decay)</td>
+    <td>scheduler = WarmupCosineSchedule(optimizer, warmup_steps=args.warmup_steps, t_total=t_total)</td>
+    <td>RandomResizedCrop(384)</td>
+    <td>9400 (iter)</td>
+    <td>98.16 </td>
+    <td>98.07 </td>
+    <td>9hr 23min </td>
+  </tr>
 
 </table>
 
