@@ -3,7 +3,7 @@ import torch.nn as nn
 import segmentation_models_pytorch as smp
 
 class CroppingModel(nn.Module):
-    def __init__(self):
+    def __init__(self, cfg):
         super(CroppingModel, self).__init__()
         self.backbone = smp.Unet(
             encoder_name="resnet34",        # choose encoder, e.g. mobilenet_v2 or efficientnet-b7
@@ -15,7 +15,7 @@ class CroppingModel(nn.Module):
         self.activate_backbone = nn.LeakyReLU()
 
         # Initailize the downsampling model
-        list_downsample_rate = [2, 2, 2, 2, 2, 2, 2, 3]
+        list_downsample_rate = cfg['model']['list_downsample_rate']
         sequence = list()
         length_list = len(list_downsample_rate)
         for i, down_rate in enumerate(list_downsample_rate):

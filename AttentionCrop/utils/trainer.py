@@ -11,7 +11,7 @@ from utils.model import CroppingModel
 class Trainer:
     def __init__(self, cfg):
         self.cfg = cfg
-        self.model = CroppingModel()
+        self.model = CroppingModel(cfg)
         self.optimizer = create_optim(cfg, self.model)
         self.lr_scheduler = create_scheduler(cfg, self.optimizer)
         self.dataloader_train, self.dataloader_val = get_cropping_model_loader(cfg)

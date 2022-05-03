@@ -1,6 +1,6 @@
 output:
   output_folder: 'results'
-  description: Unet-ch64-2^7*3
+  description: Unet-ch64-4^3*3*2
 
 keep_train: false
 path_pretrained_weight: /work/kevin8ntust/Crop-classification/results/CvT21/iteration_157000.pth
@@ -29,3 +29,5 @@ data:
   path_csv_train: ../../data/crop_data/seperate_csv/fold1_train.csv
   path_csv_val: ../../data/crop_data/seperate_csv/fold1_test.csv
   format_attn: '.dat'
+model:
+  list_downsample_rate: [4, 4, 4, 3, 2]
