@@ -1,0 +1,31 @@
+output:
+  output_folder: 'results'
+  description: Unet-ch64-2^7*3
+
+keep_train: false
+path_pretrained_weight: /work/kevin8ntust/Crop-classification/results/CvT21/iteration_157000.pth
+keep_train_obj: ['model', 'optimizer', 'lr_scheduler']  # ['model', 'optimizer', 'lr_scheduler']
+
+train:
+  batch_size: 1
+  total_iterations: 100000
+  eval_freq: 10000
+  save_model_freq: 1000
+  lr_scheduler: 
+    sched: cosine
+    warmup_iterations: 1666
+    warmup_lr: 0.000001
+    min_lr: 0.00001
+  optimizer: 
+    mode: adamW
+    lr: 0.00025
+    weight_decay: 0.1
+val:
+  batch_size: 1
+data:
+  classification_model_resolution: 384
+  root_dataset_img: ../../data/crop_data/data/
+  root_dataset_attn: ../output/attention/attention-map/
+  path_csv_train: ../../data/crop_data/seperate_csv/fold1_train.csv
+  path_csv_val: ../../data/crop_data/seperate_csv/fold1_test.csv
+  format_attn: '.dat'

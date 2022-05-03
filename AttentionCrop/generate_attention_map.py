@@ -8,9 +8,10 @@ from tqdm import tqdm
 import torch
 import torchvision.transforms.functional as F
 
+from utils.data_utils import get_attn_loader
+
 import sys
 sys.path.append('../')
-from utils.data_utils import get_attn_loader
 from models.modeling import VisionTransformer, CONFIGS
 
 class GenerateAttnMap:
@@ -102,7 +103,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Train classification network')
     parser.add_argument('--cfg',
                         help='experiment configure file name',
-                        default='config.yaml',
+                        default='./config_files/config_attn.yaml',
                         type=str)
     args = parser.parse_args()
     return args
