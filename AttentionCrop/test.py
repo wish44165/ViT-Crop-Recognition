@@ -108,6 +108,12 @@ class Tester:
             for w in range(prediction_w):
                 difference_resized[h*upsample_rate:h*upsample_rate+upsample_rate-1, w*upsample_rate:w*upsample_rate+upsample_rate-1] = difference[h][w]
         difference_resized = cv2.applyColorMap(difference_resized, cv2.COLORMAP_JET)
+        if len(prediction.shape) == 2:
+            prediction.unsqueeze_(0)
+        for h in range(prediction_h):
+            for w in range(prediction_w):
+                if prediction[0][h][w] < 0:
+                    difference_resized[h*upsample_rate:h*upsample_rate+20-1, w*upsample_rate:w*upsample_rate+20-1] = (0, 0, 0)
         difference_map = img_ratio_difference * img + (1 - img_ratio_difference) * difference_resized
         path_difference_map = os.path.join(self.cfg['test']['output']['folder'], 
                                            self.cfg['test']['output']['description'],
@@ -128,6 +134,10 @@ class Tester:
         correctness_resize_colorized = np.zeros((vis_h, vis_w, 3), dtype=np.uint8)
         correctness_resize_colorized[:, :] = (0, 69, 255) #(114, 128, 250)
         correctness_resize_colorized[correctness_resized == 1] = (50, 205, 50) #(152,251,152)
+        for h in range(prediction_h):
+            for w in range(prediction_w):
+                if prediction[0][h][w] < 0:
+                    correctness_resize_colorized[h*upsample_rate:h*upsample_rate+20-1, w*upsample_rate:w*upsample_rate+20-1] = (0, 0, 0)
         correctness_map = img_ratio_correctness * img + (1 - img_ratio_correctness) * correctness_resize_colorized
         path_correctness_map = os.path.join(self.cfg['test']['output']['folder'], 
                                            self.cfg['test']['output']['description'],
