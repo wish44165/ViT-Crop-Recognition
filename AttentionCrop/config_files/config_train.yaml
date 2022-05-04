@@ -31,3 +31,14 @@ data:
   format_attn: '.dat'
 model:
   list_downsample_rate: [4, 4, 4, 3, 2]
+test:
+  checkpoint: /work/kevin8ntust/ViT-Crop-Recognition/AttentionCrop/results/Unet-ch64-4^3*3*2/iteration_47000.pth
+  path_csv_test: ./fold1_test_toy.csv
+  visualization_downsample_rate: 4 # If visualization_downsample_rate is set to 4, the visualization size will be a quarter of the original.
+  original_img_ratio_difference_map: 0.4
+  original_img_ratio_correctness_map: 0.7
+  do_visualization: true
+  output:
+    folder: test_results
+    description: Unet-ch64-4^3*3*2
+  

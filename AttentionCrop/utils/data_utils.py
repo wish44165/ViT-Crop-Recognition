@@ -18,12 +18,14 @@ class Crop_Divisible_By_N(object):
         return F.crop(img, top=0, left=0, height=crop_size_h, width=crop_size_w)
 
 class Cropping_Dataset_SplitByCSV(torch.utils.data.Dataset):
-    def __init__(self, cfg, transforms, is_train=True):
+    def __init__(self, cfg, transforms, mode='train', return_file_name=False):
         super().__init__()
-        if is_train:
+        if mode == 'train':
             df = pd.read_csv(cfg['data']['path_csv_train'], header=None)
-        else:
+        elif mode == 'val':
             df = pd.read_csv(cfg['data']['path_csv_val'], header=None)
+        elif mode == 'test':
+            df = pd.read_csv(cfg['test']['path_csv_test'], header=None)
         self.list_datapair = df.values
         self.transforms = transforms
         self.root_dataset_img = cfg['data']['root_dataset_img']
@@ -31,6 +33,7 @@ class Cropping_Dataset_SplitByCSV(torch.utils.data.Dataset):
         self.len = len(self.list_datapair)
         self.format_attn = cfg['data']['format_attn']
         self.classification_model_resolution = cfg['data']['classification_model_resolution']
+        self.return_file_name = return_file_name
 
     def __getitem__(self, index):
         ''' Load the image '''
@@ -47,7 +50,11 @@ class Cropping_Dataset_SplitByCSV(torch.utils.data.Dataset):
         attn_map = np.fromfile(path_attn, np.float64)
         attn_map /= np.abs(attn_map).max()
         label = torch.from_numpy(attn_map).reshape((int(img_h/self.classification_model_resolution), int(img_w/self.classification_model_resolution)))
-        data = (img.to(torch.float32), label.to(torch.float32))
+        if self.return_file_name:
+            file_name_prefix = self.list_datapair[index][0][:self.list_datapair[index][0].rfind('.')]
+            data = (img.to(torch.float32), label.to(torch.float32), self.list_datapair[index][1], file_name_prefix)
+        else:
+            data = (img.to(torch.float32), label.to(torch.float32))
         return data
 
     def __len__(self):
@@ -113,14 +120,19 @@ def get_attn_loader(cfg):
     dataloader = DataLoader(dataset, 1, False)
     return dataloader
 
-def get_cropping_model_loader(cfg):
+def get_cropping_model_loader(cfg, return_file_name=False, is_test=False):
     transforms_ = transforms.Compose([
         transforms.ToTensor(),
         Crop_Divisible_By_N(cfg['data']['classification_model_resolution']),
         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
     ])
-    dataset_train = Cropping_Dataset_SplitByCSV(cfg, transforms_, is_train=True)
-    dataset_val = Cropping_Dataset_SplitByCSV(cfg, transforms_, is_train=False)
-    dataloader_train = DataLoader(dataset_train, cfg['train']['batch_size'], True)
-    dataloader_val = DataLoader(dataset_val, cfg['val']['batch_size'], False)
-    return (dataloader_train, dataloader_val)
+    if is_test:
+        dataset = Cropping_Dataset_SplitByCSV(cfg, transforms_, mode='test', return_file_name=return_file_name)
+        dataloader = DataLoader(dataset, cfg['train']['batch_size'], False)
+        return dataloader
+    else:
+        dataset_train = Cropping_Dataset_SplitByCSV(cfg, transforms_, mode='train', return_file_name=return_file_name)
+        dataset_val = Cropping_Dataset_SplitByCSV(cfg, transforms_, mode='val', return_file_name=return_file_name)
+        dataloader_train = DataLoader(dataset_train, cfg['train']['batch_size'], True)
+        dataloader_val = DataLoader(dataset_val, cfg['val']['batch_size'], False)
+        return (dataloader_train, dataloader_val)
