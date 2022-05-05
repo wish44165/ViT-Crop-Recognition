@@ -33,6 +33,7 @@ class GenerateAttnMap:
 
     def process_small_patch(self, x, label):
         im = (torch.squeeze(torch.clamp(x*0.5+0.5, min=-1., max=1.))*255).permute(1, 2, 0).cpu().numpy().astype(np.uint8)
+        im = im[:, :, ::-1]
         logits, att_mat = self.model(x)
 
         att_mat = torch.stack(att_mat).squeeze(1)
@@ -95,7 +96,6 @@ class GenerateAttnMap:
                         vis_patch, attn_patch = self.process_small_patch(x, label)
                         vis_whole_img[top:h+1, left:w+1, :] = vis_patch
                         attn_whole_img[idx_h:idx_h+1, idx_w:idx_w+1] = attn_patch
-                vis_whole_img = vis_whole_img[:, :, ::-1]
                 cv2.imwrite(os.path.join(self.dir_vis, class_name, file_name+'.jpg'), vis_whole_img)
                 attn_whole_img.tofile(os.path.join(self.dir_attn_map, class_name, file_name+'.dat'))
 
