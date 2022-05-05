@@ -29,6 +29,8 @@ class Tester:
                     os.makedirs(os.path.join(root_folder_name, 'correctness_map', class_name))
                 if not os.path.isdir(os.path.join(root_folder_name, 'difference_map', class_name)):
                     os.makedirs(os.path.join(root_folder_name, 'difference_map', class_name))
+                if not os.path.isdir(os.path.join(root_folder_name, 'prediction_map', class_name)):
+                    os.makedirs(os.path.join(root_folder_name, 'prediction_map', class_name))
 
     def start(self):
         self.load_model()
@@ -144,6 +146,23 @@ class Tester:
                                            'correctness_map',
                                            f'{filename}.jpg')
         cv2.imwrite(path_correctness_map, correctness_map)
+
+        ############## Get the visualization of the prediction ##############
+        prediction = torch.squeeze((prediction+1)*127.5).cpu().numpy()
+        if prediction.size == 1:
+            prediction = np.expand_dims(prediction, axis=0)
+            prediction = np.expand_dims(prediction, axis=0)
+        prediction_resized = np.zeros((vis_h, vis_w), dtype=np.uint8)
+        for h in range(prediction_h):
+            for w in range(prediction_w):
+                prediction_resized[h*upsample_rate:h*upsample_rate+upsample_rate-1, w*upsample_rate:w*upsample_rate+upsample_rate-1] = prediction[h][w]
+        prediction_resized = cv2.applyColorMap(prediction_resized, cv2.COLORMAP_JET)
+        prediction_resized = img_ratio_difference * img + (1 - img_ratio_difference) * prediction_resized
+        path_prediction_map = os.path.join(self.cfg['test']['output']['folder'], 
+                                           self.cfg['test']['output']['description'],
+                                           'prediction_map',
+                                           f'{filename}.jpg')
+        cv2.imwrite(path_prediction_map, prediction_resized)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train classification network')
