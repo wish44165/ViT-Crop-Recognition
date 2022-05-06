@@ -2,15 +2,15 @@ directory:
   checkpoint: ../checkpoint/yuhsi_ViTB16_val_98.73_test_98.64.bin
   data:
     root-dir: ../../data/crop_data/data/
-    path-csv: ../../data/crop_data/seperate_csv/fold1_train.csv
+    path-csv: ./fold1_test_toy.csv # ../../data/crop_data/seperate_csv/fold1_train.csv
   output:
-    root-dir: ../output/attention
+    root-dir: ./attention_map_val_toy # ../output/attention
     sub-dir-vis: visualization
     sub-dir-attention-map: attention-map
 
 train:
   attention-method: grad-CAM
-  index-start: 47000
+  index-start: 0
   model:
     type: ViT-B_16 # Choose from ["ViT-B_16", "ViT-B_32", "ViT-L_16", "ViT-L_32", "ViT-H_14", "R50-ViT-B_16"]
   img-size: 384

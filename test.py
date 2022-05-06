@@ -21,6 +21,8 @@ from models.modeling import VisionTransformer, CONFIGS
 from utils.scheduler import WarmupLinearSchedule, WarmupCosineSchedule
 from utils.data_utils import get_loader
 from utils.dist_util import get_world_size
+from AttentionCrop.CroppingModelLoader import CroppingModelLoader
+from utils.data_utils import Dataset_SplitByCSV
 
 from torchvision import transforms, datasets
 from torch.utils.data import DataLoader, RandomSampler, DistributedSampler, SequentialSampler
@@ -64,20 +66,44 @@ def test(args, model):
     """ Train the model """
 
     # Prepare dataset
-    transform_test = transforms.Compose([
-        transforms.Resize((args.img_size, args.img_size)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-    ])
-    testset = datasets.ImageFolder(os.path.join(args.test_dir, args.dataset), transform=transform_test)
-    test_sampler = SequentialSampler(testset)
-    test_loader = DataLoader(testset,
-                            sampler=test_sampler,
-                            batch_size=4,
-                            num_workers=4,
-                            pin_memory=True) if testset is not None else None
-    #print(test_loader)
-    test_bar = tqdm(test_loader, desc=f'Testing')
+    if args.use_cropping_model:
+        transform_test = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        ])
+        if args.load_data_by_csv:
+            testset = Dataset_SplitByCSV(args.dir_dataset, path_csv=args.path_csv, transform=transform_test)
+        else:
+            testset = datasets.ImageFolder(os.path.join(args.test_dir, args.dataset), transform=transform_test)
+        test_loader = CroppingModelLoader(testset, 
+                                          args.cropping_model_checkpoint,
+                                          args.device,
+                                          args.cropping_max_batch_size,
+                                          patch_len=args.img_size,
+                                          positive_sample_threshold=args.cropping_model_positive_sample_threshold,
+                                          list_downsample_rate=args.cropping_model_list_downsample_rate,
+                                          hidden_activation=args.cropping_model_hidden_activation)
+    else: 
+        transform_test = transforms.Compose([
+            transforms.Resize((args.img_size, args.img_size)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        ])
+        if args.load_data_by_csv:
+            testset = Dataset_SplitByCSV(args.dir_dataset, path_csv=args.path_csv, transform=transform_test)
+        else:
+            testset = datasets.ImageFolder(os.path.join(args.test_dir, args.dataset), transform=transform_test)
+        test_sampler = SequentialSampler(testset)
+        test_loader = DataLoader(testset,
+                                sampler=test_sampler,
+                                batch_size=4,
+                                num_workers=4,
+                                pin_memory=True) if testset is not None else None  
+    
+    if args.use_cropping_model:
+        test_bar = tqdm(test_loader, desc=f'Testing', total=len(test_loader.dataset))
+    else:
+        test_bar = tqdm(test_loader, desc=f'Testing')
     all_preds, all_label, all_logit = [], [], []
     with torch.no_grad():
         for batch_data in test_bar:
@@ -86,6 +112,9 @@ def test(args, model):
             label = label.to(device)
             logits = model(image)[0]
             preds = torch.argmax(logits, dim=-1)
+            if args.use_cropping_model:
+                preds = torch.unsqueeze(torch.mode(preds).values, 0)
+                label = torch.unsqueeze(label, 0)
             if len(all_preds) == 0:
                 all_preds.append(preds.detach().cpu().numpy())
                 all_label.append(label.detach().cpu().numpy())
@@ -134,6 +163,30 @@ def main():
     parser.add_argument('--fp16_opt_level', type=str, default='O2',
                         help="For fp16: Apex AMP optimization level selected in ['O0', 'O1', 'O2', and 'O3']."
                              "See details at https://nvidia.github.io/apex/amp.html")
+    
+    ############## Arguments related to the cropping model ##############
+    parser.add_argument('--use_cropping_model', action=argparse.BooleanOptionalAction,
+                        help="Set this argument to use the cropping model to preprocess the input data")
+    parser.add_argument('--cropping_model_checkpoint', type=str, default='./AttentionCrop/results/Unet-ch64-4^3*3*2/iteration_100000.pth',
+                        help="The path to the checkpoint of the cropping model")
+    parser.add_argument('--cropping_max_batch_size', type=int, default=16,
+                        help="Maximum batch size")
+    parser.add_argument('--cropping_model_positive_sample_threshold', type=float, default=0.3,
+                        help="A threshold determines whether the patch is a positive sample. "
+                             "The corresponding patch is positive if the predicted attention score is greater than the threshold.")
+    parser.add_argument('--cropping_model_list_downsample_rate', type=list, default=[4, 4, 4, 3, 2],
+                        help="Determine the architecture of the cropping model."
+                             "The number stands for the downsampling rate of each block in the downsample module")
+    parser.add_argument('--cropping_model_hidden_activation', type=str, default='LeackyReLU',
+                        help="Determine the activation function used in the cropping model")
+    
+    ############## Arguments related to Dataset_SplitByCSV #####################
+    parser.add_argument('--load_data_by_csv', action=argparse.BooleanOptionalAction,
+                        help="Set this argument to use the CSV file to load the dataset")
+    parser.add_argument('--dir_dataset', type=str, default='../data/fold1',
+                        help="The directory storing the dataset")
+    parser.add_argument('--path_csv', type=str, default='/work/kevin8ntust/data/crop_data/seperate_csv/fold1_test.csv',
+                        help="The path of the csv file recording the validation data.")   
     args = parser.parse_args()
 
 
@@ -167,3 +220,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # t = torch.Tensor([12, 55, 3, 99, 10, 0, 2, 11, 11, 11, 3, 5])
+    # m = torch.mode(t)
+    # print(m)

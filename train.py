@@ -338,6 +338,8 @@ def main():
                         help="Loss scaling to improve fp16 numeric stability. Only used when fp16 set to True.\n"
                              "0 (default value): dynamic loss scaling.\n"
                              "Positive power of 2: static loss scaling value.\n")
+
+    ############## Arguments related to Dataset_SplitByCSV #####################
     parser.add_argument('--dir_dataset', type=str, default='../data/fold1',
                         help="The directory storing the dataset")
     parser.add_argument('--path_csv_train', type=str, default='/work/kevin8ntust/data/crop_data/seperate_csv/fold1_train.csv',
