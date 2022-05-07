@@ -233,6 +233,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
 <table>
   <tr>
     <td>Checkpoint</td>
+    <td>ID</td>
     <td>Model</td>
     <td>Pretrained</td>
     <td>Dataset</td>
@@ -249,6 +250,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   </tr>
   <tr>
     <td>2022-04-18</td>
+    <td>1</td>
     <td>ResNet101</td>
     <td>imagenet</td>
     <td>fold1</td>
@@ -265,6 +267,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   </tr>
   <tr>
     <td>2022-04-21</td>
+    <td>2</td>
     <td>ViT-B_16</td>
     <td>imagenet21k</td>
     <td>fold4</td>
@@ -281,6 +284,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   </tr>
   <tr>
     <td>2022-04-27</td>
+    <td>3</td>
     <td>ViT-B_16</td>
     <td>imagenet21k</td>
     <td>fold1</td>
@@ -297,6 +301,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   </tr>
   <tr>
     <td>2022-04-29</td>
+    <td>4</td>
     <td>ViT-B_16</td>
     <td>imagenet21k+imagenet2012</td>
     <td>fold1</td>
@@ -313,6 +318,7 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
   </tr>
   <tr>
     <td>2022-05-03</td>
+    <td>5</td>
     <td>ViT-B_16</td>
     <td>imagenet21k+imagenet2012</td>
     <td>fold1</td>
