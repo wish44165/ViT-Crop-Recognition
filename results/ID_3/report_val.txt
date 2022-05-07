@@ -1,0 +1,44 @@
+(Crop) yuhsi@yuhsi-System-Product-Name:~/NYCU/Competition/ViT-pytorch$ python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoint.bin --img_size 384 --dataset val
+/home/yuhsi/yes/envs/Crop/lib/python3.9/site-packages/apex-0.1-py3.9.egg/apex/pyprof/__init__.py:5: FutureWarning: pyprof will be removed by the end of June, 2022
+04/27/2022 16:18:27 - WARNING - __main__ - Process rank: -1, device: cuda, n_gpu: 1, distributed training: False, 16-bits training: False
+04/27/2022 16:18:29 - INFO - __main__ - classifier: token
+hidden_size: 768
+patches:
+  size: !!python/tuple
+  - 16
+  - 16
+representation_size: null
+transformer:
+  attention_dropout_rate: 0.0
+  dropout_rate: 0.1
+  mlp_dim: 3072
+  num_heads: 12
+  num_layers: 12
+
+04/27/2022 16:18:29 - INFO - __main__ - Training parameters Namespace(model_type='ViT-B_16', checkpoint='output/Crop_ViT-B_16_checkpoint.bin', img_size=384, test_dir='../data/fold1', dataset='val', num_classes=15, local_rank=-1, seed=42, fp16=False, fp16_opt_level='O2', n_gpu=1, device=device(type='cuda'))
+04/27/2022 16:18:29 - INFO - __main__ - Total Parameter: 	86.1M
+86.102031
+Testing: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3618/3618 [05:13<00:00, 11.56it/s]
+              precision    recall  f1-score   support
+
+           0   1.000000  1.000000  1.000000       734
+           1   0.988081  0.986318  0.987199      1681
+           2   0.988636  0.972067  0.980282       358
+           3   0.991903  0.985632  0.988758      1740
+           4   0.994286  0.988636  0.991453       352
+           5   0.994178  0.992012  0.993093      1377
+           6   0.996458  0.991774  0.994111       851
+           7   0.980519  0.983713  0.982114       614
+           8   0.978033  0.987328  0.982659      1894
+           9   1.000000  0.995146  0.997567      1442
+          10   0.983333  0.976821  0.980066       302
+          11   0.990291  0.997904  0.994083      1431
+          12   0.953533  0.961914  0.957705      1024
+          13   0.980050  0.982500  0.981273       400
+          14   0.988806  0.977860  0.983302       271
+
+    accuracy                       0.987354     14471
+   macro avg   0.987207  0.985308  0.986244     14471
+weighted avg   0.987401  0.987354  0.987367     14471
+
+(Crop) yuhsi@yuhsi-System-Product-Name:~/NYCU/Competition/ViT-pytorch$
