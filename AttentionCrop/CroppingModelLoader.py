@@ -58,11 +58,11 @@ class CroppingModelLoader:
 
                 # Add the patch to returning_patches by the indices received by get_returning_index()
                 indices_h, indices_w = self.get_returning_index(prediction)
-                for (h, w) in zip(indices_h, indices_w):
-                    start_h_index = self.patch_len * h
-                    end_h_index = self.patch_len * h + self.patch_len
-                    start_w_index = self.patch_len * w
-                    end_w_index = self.patch_len * w + self.patch_len
+                start_h_index_list = indices_h * self.patch_len
+                end_h_index_list = start_h_index_list + self.patch_len
+                start_w_index_list = indices_w * self.patch_len
+                end_w_index_list = start_w_index_list + self.patch_len
+                for (start_h_index, end_h_index, start_w_index, end_w_index) in zip(start_h_index_list, end_h_index_list, start_w_index_list, end_w_index_list):
                     returning_patches.append(torch.unsqueeze(img[0, :, start_h_index:end_h_index, start_w_index:end_w_index], 0))
                 # Concate the returning patches to a batch of data
                 returning_data = torch.concat(returning_patches, dim=0)
