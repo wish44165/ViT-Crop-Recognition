@@ -38,6 +38,14 @@ python3 generate_attention_map.py --cfg <Config File>
 
 Use a `.yaml` shared by `train.py` and `test.py` file to configure the program.
 
+### Set Up the Environment
+
+Install [smp](https://github.com/qubvel/segmentation_models.pytorch) module.
+
+```bash
+pip install segmentation-models-pytorch
+```
+
 ### Configuration File 
 
 ```yaml
