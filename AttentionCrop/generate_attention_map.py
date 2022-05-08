@@ -96,7 +96,8 @@ class GenerateAttnMap:
                         vis_patch, attn_patch = self.process_small_patch(x, label)
                         vis_whole_img[top:h+1, left:w+1, :] = vis_patch
                         attn_whole_img[idx_h:idx_h+1, idx_w:idx_w+1] = attn_patch
-                cv2.imwrite(os.path.join(self.dir_vis, class_name, file_name+'.jpg'), vis_whole_img)
+                if cfg['save-visualization']:
+                    cv2.imwrite(os.path.join(self.dir_vis, class_name, file_name+'.jpg'), vis_whole_img)
                 attn_whole_img.tofile(os.path.join(self.dir_attn_map, class_name, file_name+'.dat'))
 
 def parse_args():

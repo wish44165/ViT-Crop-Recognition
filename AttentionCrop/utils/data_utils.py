@@ -61,7 +61,7 @@ class Cropping_Dataset_SplitByCSV(torch.utils.data.Dataset):
         return self.len
 
 class Dataset_SplitByCSV(torch.utils.data.Dataset):
-    def __init__(self, root_dataset, path_csv, transform=None, return_file_name=False, start_from=0):
+    def __init__(self, root_dataset, path_csv, transform=None, return_file_name=False, start_from=0, end_to=-1):
         super().__init__()
         self.className2idx = {
             'banana': 0, 
@@ -84,7 +84,10 @@ class Dataset_SplitByCSV(torch.utils.data.Dataset):
         df = pd.read_csv(path_csv, header=None)
         df.info()
         self.list_datapair = df.values
-        self.list_datapair = self.list_datapair[start_from:]
+        if end_to == -1:
+            self.list_datapair = self.list_datapair[start_from:]
+        else:
+            self.list_datapair = self.list_datapair[start_from:end_to]
         self.transform = transform
         self.root_dataset = root_dataset
         self.len = len(self.list_datapair)
@@ -116,7 +119,8 @@ def get_attn_loader(cfg):
                                  cfg['directory']['data']['path-csv'],
                                  transform=transform,
                                  return_file_name=True,
-                                 start_from=cfg['train']['index-start'])
+                                 start_from=cfg['train']['index-start'],
+                                 end_to=cfg['train']['index-end'])
     dataloader = DataLoader(dataset, 1, False)
     return dataloader
 

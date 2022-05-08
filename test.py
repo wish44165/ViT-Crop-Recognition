@@ -105,6 +105,7 @@ def test(args, model):
     else:
         test_bar = tqdm(test_loader, desc=f'Testing')
     all_preds, all_label, all_logit = [], [], []
+    correct_prediction_entropy_list, wrong_prediction_entropy_list = np.array([]), np.array([])
     with torch.no_grad():
         for batch_data in test_bar:
             image, label = batch_data
@@ -113,15 +114,34 @@ def test(args, model):
             logits = model(image)[0]
             preds = torch.argmax(logits, dim=-1)
             if args.use_cropping_model:
-                preds = torch.unsqueeze(torch.mode(preds).values, 0)
+                # Calculate the entropy for each prediction
+                softmax = torch.nn.Softmax()
+                logits_softmax = softmax(logits)
+                entropy = -torch.sum(logits_softmax * torch.log2(logits_softmax), dim=1)
+                if args.save_entropy_list:
+                    correct_prediction_entropy = entropy[preds==label].detach().cpu().numpy()
+                    correct_prediction_entropy_list = np.append(
+                        correct_prediction_entropy_list, correct_prediction_entropy
+                    )
+                    
+                    wrong_prediction_entropy = entropy[preds!=label].detach().cpu().numpy()
+                    wrong_prediction_entropy_list = np.append(
+                        wrong_prediction_entropy_list, wrong_prediction_entropy
+                    )
+                preds_filtered = preds[entropy<args.cropping_model_entropy_threshold]
+                # Prevent removing all predictions
+                if preds_filtered.nelement() == 0:
+                    preds_filtered = preds[entropy==entropy.min()]
+                # Internal ensemble
+                preds_filtered = torch.unsqueeze(torch.mode(preds_filtered).values, 0)
                 label = torch.unsqueeze(label, 0)
             if len(all_preds) == 0:
-                all_preds.append(preds.detach().cpu().numpy())
+                all_preds.append(preds_filtered.detach().cpu().numpy())
                 all_label.append(label.detach().cpu().numpy())
                 all_logit.append(logits.detach().cpu().numpy())
             else:
                 all_preds[0] = np.append(
-                    all_preds[0], preds.detach().cpu().numpy(), axis=0
+                    all_preds[0], preds_filtered.detach().cpu().numpy(), axis=0
                 )
                 all_label[0] = np.append(
                     all_label[0], label.detach().cpu().numpy(), axis=0
@@ -131,7 +151,9 @@ def test(args, model):
                 )
             
         test_bar.close()
-
+    if args.save_entropy_list:
+        correct_prediction_entropy_list.tofile('correct_prediction_entropy_list.dat')
+        wrong_prediction_entropy_list.tofile('wrong_prediction_entropy_list.dat')
     print(classification_report(all_label[0], all_preds[0], target_names=[str(i) for i in range(args.num_classes)], digits=6))
     
 
@@ -169,7 +191,7 @@ def main():
                         help="Set this argument to use the cropping model to preprocess the input data")
     parser.add_argument('--cropping_model_checkpoint', type=str, default='./AttentionCrop/results/Unet-ch64-4^3*3*2/iteration_100000.pth',
                         help="The path to the checkpoint of the cropping model")
-    parser.add_argument('--cropping_max_batch_size', type=int, default=16,
+    parser.add_argument('--cropping_max_batch_size', type=int, default=24,
                         help="Maximum batch size")
     parser.add_argument('--cropping_model_positive_sample_threshold', type=float, default=0.3,
                         help="A threshold determines whether the patch is a positive sample. "
@@ -179,7 +201,12 @@ def main():
                              "The number stands for the downsampling rate of each block in the downsample module")
     parser.add_argument('--cropping_model_hidden_activation', type=str, default='LeackyReLU',
                         help="Determine the activation function used in the cropping model")
-    
+
+    parser.add_argument('--cropping_model_entropy_threshold', type=float, default=99999,
+                        help="A threshold determines whether the prediction should be filter out before the internal ensemble.")
+    parser.add_argument('--save_entropy_list', action=argparse.BooleanOptionalAction,
+                        help="Save the entropy list")
+
     ############## Arguments related to Dataset_SplitByCSV #####################
     parser.add_argument('--load_data_by_csv', action=argparse.BooleanOptionalAction,
                         help="Set this argument to use the CSV file to load the dataset")
@@ -220,6 +247,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # t = torch.Tensor([12, 55, 3, 99, 10, 0, 2, 11, 11, 11, 3, 5])
-    # m = torch.mode(t)
-    # print(m)
+    # t = torch.Tensor([[2, 2, 2, 2], [4, 4, 4, 4], [8, 8, 8, 8]])
+    # entropy = -torch.sum(t * torch.log2(t), dim=1)
+    # print(entropy)
+
