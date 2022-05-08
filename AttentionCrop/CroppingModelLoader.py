@@ -10,10 +10,10 @@ class CroppingModelLoader:
                  device,
                  max_batch_size,
                  shuffle=False,
-                 positive_sample_threshold=0.3,
+                 positive_sample_threshold=0.0,
                  patch_len=384,
                  list_downsample_rate=[4, 4, 4, 3, 2],
-                 hidden_activation='LeackyReLU'):
+                 hidden_activation='Mish'):
         # Initialize some instances 
         self.dataset = dataset
         self.device = device
