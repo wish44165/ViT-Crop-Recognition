@@ -159,8 +159,23 @@ python3 train.py --name Crop \
 ```
 
 ## Inference
-```bash=
+
+Our ViT model takes images with size 384x384 as inputs, so we have to make the testing images fit this size during the inference phase. In this project, we implement the following two kinds of preprocessing methods to achieve the target:
+1. `transforms.Resize()`: adopt the PyTorch resizing function.
+```bash
 python3 test.py --model_type ViT-B_16 --checkpoint output/Crop_ViT-B_16_checkpoint.bin --img_size 384
+```
+
+2. Cropping model: use the cropping model to pick up at most `args.cropping_max_batch_size` critical patches from an input image and concat them into a batch of data in size BxCxHxW.
+```bash
+python3 test.py --model_type ViT-B_16 \
+                --checkpoint ./checkpoint/yuhsi_ViTB16_val_98.73_test_98.64.bin \
+                --img_size 384 \
+                
+                --use_cropping_model \
+                --cropping_max_batch_size <the maximum output sample number of the cropping model> \
+                --cropping_model_checkpoint <the path to the cropping model checkpoint> \
+                --path_csv <the path to the CSV file recording the testing data> \
 ```
 
 ## Ensemble
