@@ -113,6 +113,7 @@ def test(args, model):
             label = label.to(device)
             logits = model(image)[0]
             preds = torch.argmax(logits, dim=-1)
+            preds_filtered = preds
             if args.use_cropping_model:
                 # Calculate the entropy for each prediction
                 softmax = torch.nn.Softmax()
@@ -206,6 +207,9 @@ def main():
                         help="A threshold determines whether the prediction should be filter out before the internal ensemble.")
     parser.add_argument('--save_entropy_list', action=argparse.BooleanOptionalAction,
                         help="Save the entropy list")
+    parser.add_argument('--no_batch_size_limitation', action=argparse.BooleanOptionalAction,
+                        help="If we want to use all of the sample with the predicted attention score greater than the threshold"
+                             "Don't limit the number of the samples used for internal ensemble")
 
     ############## Arguments related to Dataset_SplitByCSV #####################
     parser.add_argument('--load_data_by_csv', action=argparse.BooleanOptionalAction,

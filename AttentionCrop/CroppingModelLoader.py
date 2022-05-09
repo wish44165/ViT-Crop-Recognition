@@ -63,7 +63,7 @@ class CroppingModelLoader:
                 start_w_index_list = indices_w * self.patch_len
                 end_w_index_list = start_w_index_list + self.patch_len
                 for (start_h_index, end_h_index, start_w_index, end_w_index) in zip(start_h_index_list, end_h_index_list, start_w_index_list, end_w_index_list):
-                    returning_patches.append(torch.unsqueeze(img[0, :, start_h_index:end_h_index, start_w_index:end_w_index], 0))
+                    returning_patches.append(img[:, :, start_h_index:end_h_index, start_w_index:end_w_index])
                 # Concate the returning patches to a batch of data
                 returning_data = torch.concat(returning_patches, dim=0)
                 yield (returning_data, label)
