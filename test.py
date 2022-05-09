@@ -194,16 +194,16 @@ def main():
                         help="The path to the checkpoint of the cropping model")
     parser.add_argument('--cropping_max_batch_size', type=int, default=24,
                         help="Maximum batch size")
-    parser.add_argument('--cropping_model_positive_sample_threshold', type=float, default=0.3,
+    parser.add_argument('--cropping_model_positive_sample_threshold', type=float, default=0.0,
                         help="A threshold determines whether the patch is a positive sample. "
                              "The corresponding patch is positive if the predicted attention score is greater than the threshold.")
     parser.add_argument('--cropping_model_list_downsample_rate', type=list, default=[4, 4, 4, 3, 2],
                         help="Determine the architecture of the cropping model."
                              "The number stands for the downsampling rate of each block in the downsample module")
-    parser.add_argument('--cropping_model_hidden_activation', type=str, default='LeackyReLU',
+    parser.add_argument('--cropping_model_hidden_activation', type=str, default='Mish',
                         help="Determine the activation function used in the cropping model")
 
-    parser.add_argument('--cropping_model_entropy_threshold', type=float, default=99999,
+    parser.add_argument('--cropping_model_entropy_threshold', type=float, default=0.05,
                         help="A threshold determines whether the prediction should be filter out before the internal ensemble.")
     parser.add_argument('--save_entropy_list', action=argparse.BooleanOptionalAction,
                         help="Save the entropy list")
