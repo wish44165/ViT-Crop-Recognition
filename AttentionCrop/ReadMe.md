@@ -129,3 +129,14 @@ We implement the class called `CroppingModelLoader()` in `CroppingModelLoader.py
 ### Returns
 
 A batch of data in the format BxCxHxW, containing the patches selected by the cropping model.
+
+## Results Visualization
+
+The following visualizations show that the cropping model can help us find the critical patches in an image.
+
+<table>
+  <tr>
+    <td><img src="./result visualization/prediction_map/sugarcane/20171012-1-0458.jpg"></td>
+    <td><img src="result visualization/prediction_map/tomato/20171213-3-0420.jpg"></td>
+  </tr>
+</table>
