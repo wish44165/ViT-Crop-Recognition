@@ -1,7 +1,6 @@
 # ViT - Crop Recognition
 農地作物現況調查影像辨識競賽 - 春季賽:AI作物影響判釋
 
-
 ### [Competitoin Link](https://aidea-web.tw/topic/93c8c26b-0e96-44bc-9a53-1c96353ad340)
 ### [Google Drive](https://drive.google.com/drive/folders/1dOIBsU-zn1JYotF7JEbUyBPG6o2qImyy)
 ### [HackMD](https://hackmd.io/@x-eSC_X5SMuQbmfwqUOwsQ/ryaRo42Mq)
@@ -373,7 +372,165 @@ Coming ...
 
 <summary>Testing Phase</summary>
   
-Coming ...
+Following results show:
+1. The cropping model helps when the maximum batch size is large and with a positive sample threshold close to zero.
+2. Filter some predictions with the entropy higher than the threshold before the internal ensemble helps.
+
+### Testing Set
+  
+<table>
+  <tr>
+    <td>Fold id</td>
+    <td>Use cropping model?</td>
+    <td>Checkpoint description</td>
+    <td>Maximum batch size</td>
+    <td>Positive sample threshold</td>
+    <td>Entropy filter threshold</td>
+    <td>Accuracy (%)</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>False</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>98.6443</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>8</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>98.5945</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>8</td>
+    <td>0.5</td>
+    <td>Nan</td>
+    <td>98.5945</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>8</td>
+    <td>0.7</td>
+    <td>Nan</td>
+    <td>98.5697</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>Nan</td>
+    <td>98.8060</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>-0.1</td>
+    <td>Nan</td>
+    <td>98.7562</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.95</td>
+    <td>98.8682</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>98.8930</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.05</td>
+    <td>98.8930</td>
+  </tr>
+
+</table>
+  
+### Validation Set
+  
+<table>
+  <tr>
+    <td>Fold id</td>
+    <td>Use cropping model?</td>
+    <td>Checkpoint description</td>
+    <td>Maximum batch size</td>
+    <td>Positive sample threshold</td>
+    <td>Entropy filter threshold</td>
+    <td>Accuracy (%)</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>False</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>98.7354</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>8</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>98.6110</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>8</td>
+    <td>0.5</td>
+    <td>Nan</td>
+    <td>98.6110</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>8</td>
+    <td>0.7</td>
+    <td>Nan</td>
+    <td>98.5972</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.05</td>
+    <td>98.8870</td>
+  </tr>
+
+</table>
 
 </details>
 
