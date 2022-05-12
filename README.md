@@ -540,6 +540,7 @@ Following results show:
 ## GitHub Acknowledgement
 - Augmentation
   - AutoAugment: https://github.com/DeepVoltaire/AutoAugment
+  - TTAch: https://github.com/qubvel/ttach
 - Optimizer
   - Ranger: https://github.com/lessw2020/Ranger-Deep-Learning-Optimizer
   - Ranger21: https://github.com/lessw2020/Ranger21 
