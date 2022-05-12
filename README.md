@@ -386,11 +386,19 @@ Following results show:
     <td>Maximum batch size</td>
     <td>Positive sample threshold</td>
     <td>Entropy filter threshold</td>
+    <td>Testing augmentation: rotation</td>
+    <td>Testing augmentation: sharpness</td>
+    <td>Testing augmentation: flip</td>
+    <td>Testing augmentation: jitter</td>
     <td>Accuracy (%)</td>
   </tr>
   <tr>
     <td>1</td>
     <td>False</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>Nan</td>
     <td>Nan</td>
     <td>Nan</td>
@@ -404,6 +412,10 @@ Following results show:
     <td>8</td>
     <td>0.3</td>
     <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>98.5945</td>
   </tr>
   <tr>
@@ -412,6 +424,10 @@ Following results show:
     <td>Unet-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>8</td>
     <td>0.5</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>Nan</td>
     <td>98.5945</td>
   </tr>
@@ -422,6 +438,10 @@ Following results show:
     <td>8</td>
     <td>0.7</td>
     <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>98.5697</td>
   </tr>
   <tr>
@@ -430,6 +450,10 @@ Following results show:
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>36</td>
     <td>0.0</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>Nan</td>
     <td>98.8060</td>
   </tr>
@@ -440,6 +464,10 @@ Following results show:
     <td>36</td>
     <td>-0.1</td>
     <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>98.7562</td>
   </tr>
   <tr>
@@ -449,6 +477,10 @@ Following results show:
     <td>36</td>
     <td>0.0</td>
     <td>0.95</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>98.8682</td>
   </tr>
   <tr>
@@ -458,6 +490,10 @@ Following results show:
     <td>36</td>
     <td>0.0</td>
     <td>0.3</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>98.8930</td>
   </tr>
   <tr>
@@ -467,7 +503,89 @@ Following results show:
     <td>36</td>
     <td>0.0</td>
     <td>0.05</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>98.8930</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>O</td>
+    <td>O</td>
+    <td>O</td>
+    <td>O</td>
+    <td>98.7065</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>Nan</td>
+    <td>O</td>
+    <td>O</td>
+    <td>O</td>
+    <td>O</td>
+    <td>97.2388</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>O</td>
+    <td>O</td>
+    <td>O</td>
+    <td>98.6567</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>O</td>
+    <td>O</td>
+    <td>98.7438</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>O</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>O</td>
+    <td>98.6816</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>O</td>
+    <td>O</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>98.8433</td>
   </tr>
 
 </table>
