@@ -647,7 +647,60 @@ Following results show:
     <td>Nan</td>
     <td>98.8433</td>
   </tr>
-
+  ==========
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>8</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>98.6692</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>8</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>98.7065</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>16</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>98.8308</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>16</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>98.9303</td>
+  </tr>
+  
 </table>
   
 ### Validation Set
