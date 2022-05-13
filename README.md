@@ -88,12 +88,19 @@ wget https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/{MODEL_N
 <details>
 
 <summary>Get Data</summary>
+
+#### Stage 1 dataset
   
 - [Train Data 下載點一](http://aicup-dataset.aidea-web.tw:18080/dataset/train/)
 - [Train Data 下載點二 (Google Drive)](https://drive.google.com/drive/folders/1hLNSr6YUIWo8jJO-6BAtZhKP_Ie9wwKw)
 - [Train Data 下載點三 (OneDrive)](https://ncku365-my.sharepoint.com/personal/p66101087_ncku_edu_tw/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fp66101087%5Fncku%5Fedu%5Ftw%2FDocuments%2FAICUP%20%E8%A8%93%E7%B7%B4%E8%B3%87%E6%96%99%E9%9B%86&ga=1)
 - [Train Data 下載點四 (學術網路)](https://dgl.synology.me/drive/d/s/nzyNfheVlMy6UeKwv0wP8SLAA4T1caMN/hS3Bh_72ez_cWY2PzLaOwMkOkPTSwj0a-_7EgGP3KZAk)
-- [Test Data (5/14開放)]()
+- [Test Data 下載點一](http://aicup-dataset.aidea-web.tw:18080/dataset/test/)
+- [Test Data 下載點二 (Google Drive)](https://drive.google.com/drive/folders/1bUP0voNju94nQd_kgr-kr-tjP4opj1Zd?usp=sharing)
+- [Test Data 下載點三 (OneDrive)](https://ncku365-my.sharepoint.com/:f:/g/personal/p66101087_ncku_edu_tw/Em_JRy7IcJhIk-Nbrn7Ii34BSh8N4AlX6GyUzg_IboJoKA)
+- [Test Data 下載點四 (學術網路)](https://dgl.synology.me/drive/d/s/odkYeGEacoKxd0oTC5BGPjff97OcvHNk/_24MEXkmwEX647b4CcRt8TqsiN6xhv4U-RrZAhjyfgwk)
+- [submission_example.csv](http://aicup-dataset.aidea-web.tw:18080/dataset/test/submission_example.csv)
+  
 
 </details>
 
