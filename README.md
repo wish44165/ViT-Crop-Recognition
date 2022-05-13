@@ -373,8 +373,9 @@ Coming ...
 <summary>Testing Phase</summary>
   
 Following results show:
-1. The cropping model helps when the maximum batch size is large and with a positive sample threshold close to zero.
+1. The cropping model helps when the maximum batch size is large and with a positive sample threshold close to but greater than zero.
 2. Filter some predictions with the entropy higher than the threshold before the internal ensemble helps.
+3. Using the testing augmentation only with horizontal flip might help, but we still have to do more experiments.
 
 ### Testing Set
   
@@ -534,6 +535,58 @@ Following results show:
     <td>O</td>
     <td>O</td>
     <td>97.2388</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>98.8433</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>98.8433</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>98.9801</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>O</td>
+    <td>98.7065</td>
   </tr>
   <tr>
     <td>1</td>
