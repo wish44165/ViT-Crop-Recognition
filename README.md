@@ -101,6 +101,7 @@ wget https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/{MODEL_N
 - [Test Data 下載點四 (學術網路)](https://dgl.synology.me/drive/d/s/odkYeGEacoKxd0oTC5BGPjff97OcvHNk/_24MEXkmwEX647b4CcRt8TqsiN6xhv4U-RrZAhjyfgwk)
 - [submission_example.csv](http://aicup-dataset.aidea-web.tw:18080/dataset/test/submission_example.csv)
   
+![image](https://github.com/TW-yuhsi/ViT-Crop-Recognition/blob/main/figures/stage%201%20data.png)
 
 </details>
 
