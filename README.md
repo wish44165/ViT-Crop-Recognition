@@ -194,7 +194,10 @@ python test_ensemble.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["resu
 ```
 
 
-
+## Submit
+```bash=
+python submit.py --model_type ["ViT-B_16","ViT-B_16"] --checkpoint ["checkpoint/ID2.bin","checkpoint/ID3.bin"] --img_size [384,384] --use_cropping_model --cropping_max_batch_size 16 --cropping_model_checkpoint checkpoint_crop/iteration_200000.pth --use_test_aug --aug_list rotation --test_aug_independent_with_cropping_model --test_aug_sample_number 16
+```
 
 
 
