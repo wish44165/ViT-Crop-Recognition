@@ -141,6 +141,7 @@ ls -l | grep "^-" | wc -l    # Check the number of files
 │   ├── requirements.txt
 │   ├── train.py
 │   ├── utils
+│   ├── labels.txt
 ```
 
 
