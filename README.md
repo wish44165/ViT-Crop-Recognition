@@ -388,6 +388,8 @@ Following results show:
 3. Using the testing augmentation only with horizontal flip might help, but we still have to do more experiments.
 
 ### Testing Set
+
+#### Test the Effectiveness of the Cropping Model and the Entropy Filter
   
 <table>
   <tr>
@@ -397,19 +399,11 @@ Following results show:
     <td>Maximum batch size</td>
     <td>Positive sample threshold</td>
     <td>Entropy filter threshold</td>
-    <td>Testing augmentation: rotation</td>
-    <td>Testing augmentation: sharpness</td>
-    <td>Testing augmentation: flip</td>
-    <td>Testing augmentation: jitter</td>
     <td>Accuracy (%)</td>
   </tr>
   <tr>
     <td>1</td>
     <td>False</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
     <td>Nan</td>
     <td>Nan</td>
     <td>Nan</td>
@@ -423,10 +417,6 @@ Following results show:
     <td>8</td>
     <td>0.3</td>
     <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
     <td>98.5945</td>
   </tr>
   <tr>
@@ -435,10 +425,6 @@ Following results show:
     <td>Unet-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>8</td>
     <td>0.5</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
     <td>Nan</td>
     <td>98.5945</td>
   </tr>
@@ -449,10 +435,6 @@ Following results show:
     <td>8</td>
     <td>0.7</td>
     <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
     <td>98.5697</td>
   </tr>
   <tr>
@@ -461,10 +443,6 @@ Following results show:
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>36</td>
     <td>0.0</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
     <td>Nan</td>
     <td>98.8060</td>
   </tr>
@@ -475,10 +453,6 @@ Following results show:
     <td>36</td>
     <td>-0.1</td>
     <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
     <td>98.7562</td>
   </tr>
   <tr>
@@ -487,9 +461,91 @@ Following results show:
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>36</td>
     <td>0.0</td>
-    <td>0.95</td>
+    <td>0.95</td
+    <td>98.8682</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>98.8930</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.05</td
+    <td>98.8930</td>
+  </tr>
+  
+</table>
+
+#### Test the Effectiveness of the Testing Augmentation
+  
+In this part, we take the best configuration in the last section as the baseline, add up the testing augmentation, and check whether the testing augmentation helps. If the testing augmentation helps, we will also check the followings:
+1. What kind of the transformation methods are critical: use only rotation.
+2. What is the best sample number for the testing augmentation: 16.
+3. Should the testing augmentation work depend on the output of the cropping model: independent is better.
+4. Do the cropping model, and the entropy filter still work when we adopt the testing augmentation: Still work.
+  
+<table>
+  <tr>
+    <td>Fold id</td>
+    <td>Use cropping model?</td>
+    <td>Checkpoint description</td>
+    <td>Maximum batch size</td>
+    <td>Positive sample threshold</td>
+    <td>Entropy filter threshold</td>
+    <td>Sample number for the testing augmentation</td>
+    <td>Dependency of the testing augmentation</td>
+    <td>Testing augmentation: flip</td>
+    <td>Testing augmentation: rotation</td>
+    <td>Testing augmentation: gaussian noise</td>
+    <td>Accuracy (%)</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
     <td>Nan</td>
     <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>98.8930</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>36</td>
+    <td>Dependent</td>
+    <td>O</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>98.9552</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>36</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>36</td>
+    <td>Dependent</td>
+    <td>O</td>
     <td>Nan</td>
     <td>Nan</td>
     <td>98.8682</td>
@@ -501,24 +557,12 @@ Following results show:
     <td>36</td>
     <td>0.0</td>
     <td>0.3</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>98.8930</td>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>True</td>
-    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>36</td>
-    <td>0.0</td>
-    <td>0.05</td>
+    <td>Dependent</td>
     <td>Nan</td>
+    <td>O</td>
     <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>98.8930</td>
+    <td>98.9677</td>
   </tr>
   <tr>
     <td>1</td>
@@ -527,24 +571,12 @@ Following results show:
     <td>36</td>
     <td>0.0</td>
     <td>0.3</td>
-    <td>O</td>
-    <td>O</td>
-    <td>O</td>
-    <td>O</td>
-    <td>98.7065</td>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>True</td>
-    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>36</td>
-    <td>0.0</td>
-    <td>Nan</td>
+    <td>Dependent</td>
     <td>O</td>
     <td>O</td>
     <td>O</td>
-    <td>O</td>
-    <td>97.2388</td>
+    <td>98.8682</td>
   </tr>
   <tr>
     <td>1</td>
@@ -553,11 +585,26 @@ Following results show:
     <td>36</td>
     <td>0.0</td>
     <td>0.3</td>
+    <td>same</td>
+    <td>Dependent</td>
+    <td>O</td>
     <td>O</td>
     <td>Nan</td>
+    <td>98.8682</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>True</td>
+    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
+    <td>16</td>
+    <td>0.0</td>
+    <td>0.3</td>
+    <td>16</td>
+    <td>Dependent</td>
+    <td>O</td>
+    <td>O</td>
     <td>Nan</td>
-    <td>Nan</td>
-    <td>98.8433</td>
+    <td>98.9552</td>
   </tr>
   <tr>
     <td>1</td>
@@ -566,11 +613,12 @@ Following results show:
     <td>36</td>
     <td>0.0</td>
     <td>0.3</td>
-    <td>Nan</td>
+    <td>36</td>
+    <td>Independent</td>
+    <td>O</td>
     <td>O</td>
     <td>Nan</td>
-    <td>Nan</td>
-    <td>98.8433</td>
+    <td>98.9552</td>
   </tr>
   <tr>
     <td>1</td>
@@ -579,8 +627,9 @@ Following results show:
     <td>36</td>
     <td>0.0</td>
     <td>0.3</td>
-    <td>Nan</td>
-    <td>Nan</td>
+    <td>same</td>
+    <td>Independent</td>
+    <td>O</td>
     <td>O</td>
     <td>Nan</td>
     <td>98.9801</td>
@@ -589,14 +638,15 @@ Following results show:
     <td>1</td>
     <td>True</td>
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
-    <td>36</td>
+    <td>16</td>
     <td>0.0</td>
     <td>0.3</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
+    <td>16</td>
+    <td>Independent</td>
     <td>O</td>
-    <td>98.7065</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>99.2910</td>
   </tr>
   <tr>
     <td>1</td>
@@ -604,53 +654,28 @@ Following results show:
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>36</td>
     <td>0.0</td>
-    <td>0.3</td>
     <td>Nan</td>
+    <td>36</td>
+    <td>Dependent</td>
     <td>O</td>
     <td>O</td>
-    <td>O</td>
-    <td>98.6567</td>
+    <td>Nan</td>
+    <td>98.6940</td>
   </tr>
   <tr>
     <td>1</td>
     <td>True</td>
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
-    <td>36</td>
+    <td>16</td>
     <td>0.0</td>
     <td>0.3</td>
-    <td>O</td>
-    <td>Nan</td>
-    <td>O</td>
-    <td>O</td>
-    <td>98.7438</td>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>True</td>
-    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>36</td>
-    <td>0.0</td>
-    <td>0.3</td>
-    <td>O</td>
-    <td>O</td>
-    <td>Nan</td>
-    <td>O</td>
-    <td>98.6816</td>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>True</td>
-    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
-    <td>36</td>
-    <td>0.0</td>
-    <td>0.3</td>
-    <td>O</td>
+    <td>Dependent</td>
     <td>O</td>
     <td>O</td>
     <td>Nan</td>
     <td>98.8433</td>
   </tr>
-  ==========
   <tr>
     <td>1</td>
     <td>True</td>
@@ -658,52 +683,41 @@ Following results show:
     <td>8</td>
     <td>0.0</td>
     <td>0.3</td>
-    <td>Nan</td>
-    <td>Nan</td>
+    <td>36</td>
+    <td>Dependent</td>
+    <td>O</td>
     <td>O</td>
     <td>Nan</td>
-    <td>98.6692</td>
+    <td>98.6318</td>
   </tr>
   <tr>
     <td>1</td>
-    <td>True</td>
-    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
-    <td>8</td>
-    <td>0.0</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
+    <td>Nan</td>
     <td>0.3</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>Nan</td>
-    <td>98.7065</td>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>True</td>
-    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
-    <td>16</td>
-    <td>0.0</td>
-    <td>0.3</td>
-    <td>Nan</td>
-    <td>Nan</td>
+    <td>36</td>
+    <td>Dependent</td>
+    <td>O</td>
     <td>O</td>
     <td>Nan</td>
-    <td>98.8308</td>
+    <td>98.6940</td>
   </tr>
   <tr>
     <td>1</td>
-    <td>True</td>
-    <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
-    <td>16</td>
-    <td>0.0</td>
-    <td>0.3</td>
     <td>Nan</td>
     <td>Nan</td>
     <td>Nan</td>
     <td>Nan</td>
-    <td>98.9303</td>
+    <td>Nan</td>
+    <td>36</td>
+    <td>Dependent</td>
+    <td>O</td>
+    <td>O</td>
+    <td>Nan</td>
+    <td>98.6940</td>
   </tr>
-  
 </table>
   
 ### Validation Set
