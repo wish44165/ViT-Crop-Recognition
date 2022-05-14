@@ -461,7 +461,7 @@ Following results show:
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>36</td>
     <td>0.0</td>
-    <td>0.95</td
+    <td>0.95</td>
     <td>98.8682</td>
   </tr>
   <tr>
@@ -479,7 +479,7 @@ Following results show:
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
     <td>36</td>
     <td>0.0</td>
-    <td>0.05</td
+    <td>0.05</td>
     <td>98.8930</td>
   </tr>
   
@@ -596,7 +596,7 @@ In this part, we take the best configuration in the last section as the baseline
     <td>1</td>
     <td>True</td>
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
-    <td>16</td>
+    <td>36</td>
     <td>0.0</td>
     <td>0.3</td>
     <td>16</td>
@@ -638,7 +638,7 @@ In this part, we take the best configuration in the last section as the baseline
     <td>1</td>
     <td>True</td>
     <td>Unet-Mish-ch64-4^3*3*2/iteration_100000.pth</td>
-    <td>16</td>
+    <td>36</td>
     <td>0.0</td>
     <td>0.3</td>
     <td>16</td>
