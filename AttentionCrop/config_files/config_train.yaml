@@ -2,13 +2,13 @@ output:
   output_folder: 'results/fold1_real'
   description: Unet-Mish-ch64-4^3*3*2
 
-keep_train: false
-path_pretrained_weight: /work/kevin8ntust/ViT-Crop-Recognition/AttentionCrop/results/Unet-Mish-ch64-4^3*3*2/iteration_100000.pth
-keep_train_obj: ['model', 'optimizer']  # ['model', 'optimizer', 'lr_scheduler']
+keep_train: true
+path_pretrained_weight: /work/kevin8ntust/ViT-Crop-Recognition/AttentionCrop/results/Unet-Mish-ch64-4^3*3*2/iteration_89000.pth
+keep_train_obj: ['model', 'optimizer', 'lr_scheduler']  # ['model', 'optimizer', 'lr_scheduler']
 
 train:
   batch_size: 1
-  total_iterations: 200000
+  total_iterations: 111000
   eval_freq: 10000
   save_model_freq: 1000
   lr_scheduler: 

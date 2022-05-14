@@ -348,6 +348,30 @@ def main():
                         help="The path of the csv file recording the validation data.")    
     args = parser.parse_args()
 
+    ############## Arguments related to the cropping model ##############
+    parser.add_argument('--use_cropping_model', action=argparse.BooleanOptionalAction,
+                        help="Set this argument to use the cropping model to preprocess the input data")
+    parser.add_argument('--cropping_model_checkpoint', type=str, default='./AttentionCrop/results/Unet-ch64-4^3*3*2/iteration_100000.pth',
+                        help="The path to the checkpoint of the cropping model")
+    parser.add_argument('--cropping_max_batch_size', type=int, default=24,
+                        help="Maximum batch size")
+    parser.add_argument('--cropping_model_positive_sample_threshold', type=float, default=0.0,
+                        help="A threshold determines whether the patch is a positive sample. "
+                             "The corresponding patch is positive if the predicted attention score is greater than the threshold.")
+    parser.add_argument('--cropping_model_list_downsample_rate', type=list, default=[4, 4, 4, 3, 2],
+                        help="Determine the architecture of the cropping model."
+                             "The number stands for the downsampling rate of each block in the downsample module")
+    parser.add_argument('--cropping_model_hidden_activation', type=str, default='Mish',
+                        help="Determine the activation function used in the cropping model")
+
+    parser.add_argument('--cropping_model_entropy_threshold', type=float, default=0.05,
+                        help="A threshold determines whether the prediction should be filter out before the internal ensemble.")
+    parser.add_argument('--save_entropy_list', action=argparse.BooleanOptionalAction,
+                        help="Save the entropy list")
+    parser.add_argument('--no_batch_size_limitation', action=argparse.BooleanOptionalAction,
+                        help="If we want to use all of the sample with the predicted attention score greater than the threshold"
+                             "Don't limit the number of the samples used for internal ensemble")
+
     # Setup CUDA, GPU & distributed training
     if args.local_rank == -1:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

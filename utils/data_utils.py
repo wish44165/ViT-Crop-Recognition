@@ -8,6 +8,10 @@ from torch.utils.data import DataLoader, RandomSampler, DistributedSampler, Sequ
 import pandas as pd
 import PIL.Image as Image
 
+import sys
+sys.path.append('../')
+from AttentionCrop.CroppingModelLoader import CroppingModelLoader
+
 logger = logging.getLogger(__name__)
 
 class Dataset_SplitByCSV(torch.utils.data.Dataset):
@@ -55,16 +59,26 @@ def get_loader(args):
     if args.local_rank not in [-1, 0]:
         torch.distributed.barrier()
 
-    transform_train = transforms.Compose([
-        transforms.RandomResizedCrop((args.img_size, args.img_size), scale=(0.05, 1.0)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-    ])
-    transform_test = transforms.Compose([
-        transforms.Resize((args.img_size, args.img_size)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-    ])
+    if args.use_cropping_model:
+        transform_train = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        ])
+        transform_test = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        ])
+    else:
+        transform_train = transforms.Compose([
+            transforms.RandomResizedCrop((args.img_size, args.img_size), scale=(0.05, 1.0)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        ])
+        transform_test = transforms.Compose([
+            transforms.Resize((args.img_size, args.img_size)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+        ])
 
     if args.dataset == "cifar10":
         trainset = datasets.CIFAR10(root="./data",
@@ -97,17 +111,36 @@ def get_loader(args):
     if args.local_rank == 0:
         torch.distributed.barrier()
 
-    train_sampler = RandomSampler(trainset) if args.local_rank == -1 else DistributedSampler(trainset)
-    test_sampler = SequentialSampler(testset)
-    train_loader = DataLoader(trainset,
-                              sampler=train_sampler,
-                              batch_size=args.train_batch_size,
-                              num_workers=4,
-                              pin_memory=True)
-    test_loader = DataLoader(testset,
-                             sampler=test_sampler,
-                             batch_size=args.eval_batch_size,
-                             num_workers=4,
-                             pin_memory=True) if testset is not None else None
+    if args.use_cropping_model:
+        train_loader = CroppingModelLoader(trainset, 
+                                          args.cropping_model_checkpoint,
+                                          args.device,
+                                          args.train_batch_size,
+                                          patch_len=args.img_size,
+                                          positive_sample_threshold=args.cropping_model_positive_sample_threshold,
+                                          list_downsample_rate=args.cropping_model_list_downsample_rate,
+                                          hidden_activation=args.cropping_model_hidden_activation)
+                                          
+        test_loader = CroppingModelLoader(testset, 
+                                          args.cropping_model_checkpoint,
+                                          args.device,
+                                          args.eval_batch_size,
+                                          patch_len=args.img_size,
+                                          positive_sample_threshold=args.cropping_model_positive_sample_threshold,
+                                          list_downsample_rate=args.cropping_model_list_downsample_rate,
+                                          hidden_activation=args.cropping_model_hidden_activation) if testset is not None else None
+    else:
+        train_sampler = RandomSampler(trainset) if args.local_rank == -1 else DistributedSampler(trainset)
+        test_sampler = SequentialSampler(testset)
+        train_loader = DataLoader(trainset,
+                                sampler=train_sampler,
+                                batch_size=args.train_batch_size,
+                                num_workers=4,
+                                pin_memory=True)
+        test_loader = DataLoader(testset,
+                                sampler=test_sampler,
+                                batch_size=args.eval_batch_size,
+                                num_workers=4,
+                                pin_memory=True) if testset is not None else None
 
     return train_loader, test_loader

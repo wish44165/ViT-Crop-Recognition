@@ -1,7 +1,9 @@
+from cmath import nan
 from numpy import arange, dtype
 import torch
 from AttentionCrop.utils.data_utils import Crop_Divisible_By_N
 from AttentionCrop.utils.model import CroppingModel
+from torchvision import transforms
 
 class CroppingModelLoader:
     def __init__(self, 
@@ -13,7 +15,8 @@ class CroppingModelLoader:
                  positive_sample_threshold=0.0,
                  patch_len=384,
                  list_downsample_rate=[4, 4, 4, 3, 2],
-                 hidden_activation='Mish'):
+                 hidden_activation='Mish',
+                 return_resized_original_image=False):
         # Initialize some instances 
         self.dataset = dataset
         self.device = device
@@ -22,6 +25,10 @@ class CroppingModelLoader:
         self.positive_sample_threshold = positive_sample_threshold
         self.patch_len = patch_len
         self.preprocess_divisible_by_N = Crop_Divisible_By_N(patch_len)
+        self.return_resized_original_image = return_resized_original_image
+
+        if return_resized_original_image:
+            self.resize_original = transforms.Resize((patch_len, patch_len))
 
         # Initialize the cropping model
         cfg = {
@@ -54,33 +61,40 @@ class CroppingModelLoader:
                 prediction = self.cropping_model(img)
                 while len(prediction.shape) < 3:
                     prediction = torch.unsqueeze(prediction, 0)
-                returning_patches = list()
 
-                # Add the patch to returning_patches by the indices received by get_returning_index()
-                indices_h, indices_w = self.get_returning_index(prediction)
+                # Add the patch to returning_data by the indices received by get_returning_index()
+                indices_h, indices_w, end_index = self.get_returning_index(prediction) 
                 start_h_index_list = indices_h * self.patch_len
                 end_h_index_list = start_h_index_list + self.patch_len
                 start_w_index_list = indices_w * self.patch_len
                 end_w_index_list = start_w_index_list + self.patch_len
-                for (start_h_index, end_h_index, start_w_index, end_w_index) in zip(start_h_index_list, end_h_index_list, start_w_index_list, end_w_index_list):
-                    returning_patches.append(img[:, :, start_h_index:end_h_index, start_w_index:end_w_index])
-                # Concate the returning patches to a batch of data
-                returning_data = torch.concat(returning_patches, dim=0)
-                yield (returning_data, label)
+                for idx, (start_h_index, end_h_index, start_w_index, end_w_index) in enumerate(zip(start_h_index_list, end_h_index_list, start_w_index_list, end_w_index_list)):
+                    if idx >= end_index:
+                        break
+                    if idx == 0:
+                        returning_data = img[:, :, start_h_index:end_h_index, start_w_index:end_w_index]
+                    else:
+                        returning_data = torch.concat((returning_data, img[:, :, start_h_index:end_h_index, start_w_index:end_w_index]), dim=0)
+                if self.return_resized_original_image:
+                    resized_original_image = self.resize_original(img)
+                    yield (returning_data, label, resized_original_image)
+                else:
+                    yield (returning_data, label)
 
     def get_returning_index(self, prediction):
         b, h, w = prediction.shape
         topk = torch.topk(prediction.view(-1), min(self.max_batch_size, torch.numel(prediction)))
         topk_values = topk.values
         topk_indices = topk.indices
-        # Get the index of the positive sample
-        positive_topk_indices = topk_indices[topk_values > self.positive_sample_threshold]
-        # Prevent returning an empty list
-        if positive_topk_indices.nelement() == 0:
-            positive_topk_indices = torch.Tensor([topk_indices[0]]).to(torch.int)
-        positive_topk_2d_indices_h = torch.div(positive_topk_indices, w, rounding_mode='trunc')
-        positive_topk_2d_indices_w = positive_topk_indices % w
-        return (positive_topk_2d_indices_h, positive_topk_2d_indices_w)
+        ############### Get the index of the positive sample ###############
+        # Create a boolean mask ending by `False`, which can avoid picking end_index=0 when all values are `True`.
+        thres_mask = topk_values>self.positive_sample_threshold 
+        thres_mask = torch.cat((thres_mask, torch.zeros(1, dtype=torch.bool, device=self.device)))
+        # When all the samples have an attention score lower than the threshold, keep at least one with the highest score
+        end_index = torch.clamp(torch.min(thres_mask, 0)[1], min=1)
+        positive_topk_2d_indices_h = torch.div(topk_indices, w, rounding_mode='trunc')
+        positive_topk_2d_indices_w = topk_indices % w
+        return (positive_topk_2d_indices_h, positive_topk_2d_indices_w, end_index)
 
 if __name__ == "__main__":
     t = torch.Tensor([[1, 2, 3], [4, 5, 6]])

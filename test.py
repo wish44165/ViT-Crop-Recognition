@@ -5,6 +5,7 @@ import logging
 import argparse
 import os
 import random
+from matplotlib.style import available
 import numpy as np
 
 from datetime import timedelta
@@ -62,9 +63,27 @@ def set_seed(args):
     if args.n_gpu > 0:
         torch.cuda.manual_seed_all(args.seed)
 
+class GaussianNoise(object):
+    def __init__(self, p, device):
+        self.p = p
+        self.device = device
+    def __call__(self, x):
+        if torch.rand(1) < self.p:
+            x = x + torch.randn(x.shape, device=self.device)
+        return x
+
 def test(args, model):
     """ Train the model """
-
+    if args.use_test_aug:
+        available_aug_dict = {
+            "rotation": transforms.RandomRotation(15), 
+            "flip": transforms.RandomHorizontalFlip(0.5),
+            "noise": GaussianNoise(0.5, args.device)
+        }
+        test_aug_transforms_ = transforms.Compose(
+            [available_aug_dict[aug_type] for aug_type in args.aug_list]
+        )
+        test_aug_transforms = transforms.Lambda(lambda x: torch.stack([test_aug_transforms_(x_) for x_ in x]))
     # Prepare dataset
     if args.use_cropping_model:
         transform_test = transforms.Compose([
@@ -82,7 +101,8 @@ def test(args, model):
                                           patch_len=args.img_size,
                                           positive_sample_threshold=args.cropping_model_positive_sample_threshold,
                                           list_downsample_rate=args.cropping_model_list_downsample_rate,
-                                          hidden_activation=args.cropping_model_hidden_activation)
+                                          hidden_activation=args.cropping_model_hidden_activation,
+                                          return_resized_original_image=True if args.test_aug_independent_with_cropping_model else False)
     else: 
         transform_test = transforms.Compose([
             transforms.Resize((args.img_size, args.img_size)),
@@ -96,8 +116,8 @@ def test(args, model):
         test_sampler = SequentialSampler(testset)
         test_loader = DataLoader(testset,
                                 sampler=test_sampler,
-                                batch_size=4,
-                                num_workers=4,
+                                batch_size=1 if args.use_test_aug else 4,
+                                num_workers=1 if args.use_test_aug else 4,
                                 pin_memory=True) if testset is not None else None  
     
     if args.use_cropping_model:
@@ -108,13 +128,42 @@ def test(args, model):
     correct_prediction_entropy_list, wrong_prediction_entropy_list = np.array([]), np.array([])
     with torch.no_grad():
         for batch_data in test_bar:
-            image, label = batch_data
-            image = image.to(device)
-            label = label.to(device)
+            if args.test_aug_independent_with_cropping_model and args.use_cropping_model:
+                image, label, resized_original_image = batch_data
+                test_aug_sample_number = args.test_aug_sample_number if args.test_aug_sample_number != -1 else image.shape[0]
+                test_aug_data_independent = resized_original_image.expand([test_aug_sample_number, *resized_original_image.shape[1:]])
+            else:
+                image, label = batch_data
+
+            if not args.use_cropping_model:
+                image = image.to(device)
+                label = label.to(device)
             logits = model(image)[0]
+            if args.use_test_aug:
+                # Move the first prediction to the buffer located in the CPU
+                logits_first = logits
+                if args.test_aug_independent_with_cropping_model and args.use_cropping_model:
+                    image_test_aug = test_aug_transforms(test_aug_data_independent)
+                else:
+                    cropping_sample_batch_size = image.shape[0]
+                    if args.test_aug_sample_number == -1:
+                        image_test_aug = image
+                    else:
+                        if args.use_cropping_model:
+                            image_test_aug_list = [image for i in range(args.test_aug_sample_number//cropping_sample_batch_size)]
+                            num_still_need = args.test_aug_sample_number - image.shape[0] * len(image_test_aug_list)
+                            if num_still_need > 0:
+                                image_test_aug_list.append(image[:num_still_need])
+                            image_test_aug = torch.concat(image_test_aug_list, dim=0)
+                        else:
+                            test_aug_sample_number = args.test_aug_sample_number if args.test_aug_sample_number != -1 else image.shape[0]
+                            image_test_aug = image.expand([test_aug_sample_number, *image.shape[1:]])
+                    image_test_aug = test_aug_transforms(image_test_aug)
+                logits = model(image_test_aug)[0]
+                logits = torch.concat((logits, logits_first), dim=0)
+
             preds = torch.argmax(logits, dim=-1)
-            preds_filtered = preds
-            if args.use_cropping_model:
+            if args.use_entropy_filter:
                 # Calculate the entropy for each prediction
                 softmax = torch.nn.Softmax()
                 logits_softmax = softmax(logits)
@@ -133,9 +182,11 @@ def test(args, model):
                 # Prevent removing all predictions
                 if preds_filtered.nelement() == 0:
                     preds_filtered = preds[entropy==entropy.min()]
-                # Internal ensemble
-                preds_filtered = torch.unsqueeze(torch.mode(preds_filtered).values, 0)
-                label = torch.unsqueeze(label, 0)
+            else:
+                preds_filtered = preds
+            # Internal ensemble
+            preds_filtered = torch.unsqueeze(torch.mode(preds_filtered).values, 0)
+            label = torch.unsqueeze(label, 0)
             if len(all_preds) == 0:
                 all_preds.append(preds_filtered.detach().cpu().numpy())
                 all_label.append(label.detach().cpu().numpy())
@@ -203,7 +254,9 @@ def main():
     parser.add_argument('--cropping_model_hidden_activation', type=str, default='Mish',
                         help="Determine the activation function used in the cropping model")
 
-    parser.add_argument('--cropping_model_entropy_threshold', type=float, default=0.05,
+    parser.add_argument('--use_entropy_filter', action=argparse.BooleanOptionalAction,
+                        help="Whether to use the entropy filter")
+    parser.add_argument('--cropping_model_entropy_threshold', type=float, default=0.3,
                         help="A threshold determines whether the prediction should be filter out before the internal ensemble.")
     parser.add_argument('--save_entropy_list', action=argparse.BooleanOptionalAction,
                         help="Save the entropy list")
@@ -218,6 +271,18 @@ def main():
                         help="The directory storing the dataset")
     parser.add_argument('--path_csv', type=str, default='/work/kevin8ntust/data/crop_data/seperate_csv/fold1_test.csv',
                         help="The path of the csv file recording the validation data.")   
+
+    ############## Arguments related to the testing augmentations #####################
+    parser.add_argument('--use_test_aug', action=argparse.BooleanOptionalAction,
+                        help="Whether to use testing augmentations")
+    parser.add_argument("--aug_list", type=str, nargs='+', choices=["rotation", "flip", "noise"],
+                        default=["rotation", "flip", "noise"],
+                        help="Which augmentation methods to use.")
+    parser.add_argument('--test_aug_independent_with_cropping_model', action=argparse.BooleanOptionalAction,
+                        help="Whether to use testing augmentations")    
+    parser.add_argument('--test_aug_sample_number', type=int, default=-1,
+                        help="number of the sample of doing the testing augmentation")    
+
     args = parser.parse_args()
 
 
@@ -251,7 +316,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # t = torch.Tensor([[2, 2, 2, 2], [4, 4, 4, 4], [8, 8, 8, 8]])
-    # entropy = -torch.sum(t * torch.log2(t), dim=1)
-    # print(entropy)
-
