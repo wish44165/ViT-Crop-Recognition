@@ -22,8 +22,7 @@ from models.modeling import VisionTransformer, CONFIGS
 from utils.scheduler import WarmupLinearSchedule, WarmupCosineSchedule
 from utils.data_utils import get_loader
 from utils.dist_util import get_world_size
-from utils.loss import FocalLoss
-
+from utils.loss import FocalLoss, FocalLossAdaptive, MMCE, MMCE_weighted
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +51,7 @@ def simple_accuracy(preds, labels):
 
 def save_model(args, model):
     model_to_save = model.module if hasattr(model, 'module') else model
-    model_checkpoint = os.path.join(args.output_dir, "%s_%s_checkpoint.bin" % (args.name, args.model_type))
+    model_checkpoint = os.path.join(args.output_dir, "fold%s_%s_%s_checkpoint.bin" % (args.foldn, args.name, args.model_type))
     torch.save(model_to_save.state_dict(), model_checkpoint)
     logger.info("Saved model checkpoint to [DIR: %s]", args.output_dir)
 
@@ -66,7 +65,7 @@ def setup(args):
     elif args.dataset == "cifar100":
         num_classes = 100
     else:
-        num_classes = 15
+        num_classes = 219
 
     model = VisionTransformer(config, args.img_size, zero_head=True, num_classes=num_classes)
     model.load_from(np.load(args.pretrained_dir))
@@ -109,11 +108,19 @@ def valid(args, model, writer, test_loader, global_step):
                           dynamic_ncols=True,
                           disable=args.local_rank not in [-1, 0])
 
+
     # Prepare loss function
     if args.loss_fct == 'CE':
         loss_fct = torch.nn.CrossEntropyLoss()
     elif args.loss_fct == 'FL':
         loss_fct = FocalLoss()
+    elif args.loss_fct == 'AdaptiveFL':
+        loss_fct = FocalLossAdaptive()
+    elif args.loss_fct == 'MMCE':
+        loss_fct = MMCE()
+    elif args.loss_fct == 'MMCE_weighted':
+        loss_fct = MMCE_weighted()
+
 
     for step, batch in enumerate(epoch_iterator):
         batch = tuple(t.to(args.device) for t in batch)
@@ -189,6 +196,33 @@ def train(args, model):
                                       betas=args.betas,
                                       eps=args.eps,
                                       weight_decay=args.weight_decay)
+
+    elif args.optim == 'Ranger':
+        sys.path.append('./Ranger-Deep-Learning-Optimizer')
+        from ranger import Ranger  # this is from ranger.py
+        from ranger import RangerVA  # this is from ranger913A.py
+        from ranger import RangerQH  # this is from rangerqh.py
+        optimizer = Ranger(model.parameters(),
+                           lr=args.learning_rate,    # 1e-4
+                           alpha=0.5, k=6, N_sma_threshhold=5,    # Ranger lookahead options
+                           betas=args.betas, eps=args.eps, weight_decay=args.weight_decay,    # Adam options
+                           use_gc=True,    # Gradient centralization on or off
+                           gc_conv_only=False)    # applied to conv layers only or conv + fc layers
+
+    elif args.optim == 'Ranger21':
+        sys.path.append('./Ranger21')
+        from ranger21 import Ranger21
+        from ranger21 import Ranger21abel
+        optimizer = Ranger21(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay, betas=args.betas,
+                             eps=args.eps, use_warmup=True,
+                             use_cheb=False,
+                             use_adaptive_gradient_clipping=True,
+                             using_gc=True,
+                             num_batches_per_epoch=int(2190*0.6/args.train_batch_size),
+                             num_epochs=int(args.num_steps*args.train_batch_size/2190*0.6),
+                             num_warmup_iterations=500,
+                             warmdown_min_lr=1e-8)
+
     t_total = args.num_steps
     if args.decay_type == "cosine":
         scheduler = WarmupCosineSchedule(optimizer, warmup_steps=args.warmup_steps, t_total=t_total)
@@ -277,10 +311,13 @@ def train(args, model):
 def main():
     parser = argparse.ArgumentParser()
     # Required parameters
+    ################################ basic setup ################################
     parser.add_argument("--name", required=True,
                         help="Name of this run. Used for monitoring.")
-    parser.add_argument("--dataset", choices=["cifar10", "cifar100", 'Crop', "Crop_CSV"], default="Crop",
+    parser.add_argument("--dataset", choices=["cifar10", "cifar100", "orchid"], default="cifar10",
                         help="Which downstream task.")
+    parser.add_argument("--foldn", type=int,
+                        help="Which fold.")
     parser.add_argument("--model_type", choices=["ViT-B_16", "ViT-B_32", "ViT-L_16",
                                                  "ViT-L_32", "ViT-H_14", "R50-ViT-B_16"],
                         default="ViT-B_16",
@@ -299,8 +336,10 @@ def main():
     parser.add_argument("--eval_every", default=100, type=int,
                         help="Run prediction on validation set every so many steps."
                              "Will always run one evaluation at the end of training.")
+
+    ################################ optimizer ################################
     parser.add_argument("--optim", choices=['SGD', 'Adam', 'AdamW',
-                                            'RAdam'],
+                                            'RAdam', 'Ranger', 'Ranger21'],
                         default="SGD",
                         help="The optimizer.")
     parser.add_argument("--learning_rate", default=3e-2, type=float,
@@ -320,9 +359,9 @@ def main():
     parser.add_argument("--max_grad_norm", default=1.0, type=float,
                         help="Max gradient norm.")
 
+    ################################ loss function ################################
     parser.add_argument("--loss_fct", type=str, default='CE',
                         help="select loss function")
-
     parser.add_argument("--local_rank", type=int, default=-1,
                         help="local_rank for distributed training on gpus")
     parser.add_argument('--seed', type=int, default=42,
@@ -338,39 +377,7 @@ def main():
                         help="Loss scaling to improve fp16 numeric stability. Only used when fp16 set to True.\n"
                              "0 (default value): dynamic loss scaling.\n"
                              "Positive power of 2: static loss scaling value.\n")
-
-    ############## Arguments related to Dataset_SplitByCSV #####################
-    parser.add_argument('--dir_dataset', type=str, default='../data/fold1',
-                        help="The directory storing the dataset")
-    parser.add_argument('--path_csv_train', type=str, default='/work/kevin8ntust/data/crop_data/seperate_csv/fold1_train.csv',
-                        help="The path of the csv file recording the training data.")
-    parser.add_argument('--path_csv_val', type=str, default='/work/kevin8ntust/data/crop_data/seperate_csv/fold1_test.csv',
-                        help="The path of the csv file recording the validation data.")    
     args = parser.parse_args()
-
-    ############## Arguments related to the cropping model ##############
-    parser.add_argument('--use_cropping_model', action=argparse.BooleanOptionalAction,
-                        help="Set this argument to use the cropping model to preprocess the input data")
-    parser.add_argument('--cropping_model_checkpoint', type=str, default='./AttentionCrop/results/Unet-ch64-4^3*3*2/iteration_100000.pth',
-                        help="The path to the checkpoint of the cropping model")
-    parser.add_argument('--cropping_max_batch_size', type=int, default=24,
-                        help="Maximum batch size")
-    parser.add_argument('--cropping_model_positive_sample_threshold', type=float, default=0.0,
-                        help="A threshold determines whether the patch is a positive sample. "
-                             "The corresponding patch is positive if the predicted attention score is greater than the threshold.")
-    parser.add_argument('--cropping_model_list_downsample_rate', type=list, default=[4, 4, 4, 3, 2],
-                        help="Determine the architecture of the cropping model."
-                             "The number stands for the downsampling rate of each block in the downsample module")
-    parser.add_argument('--cropping_model_hidden_activation', type=str, default='Mish',
-                        help="Determine the activation function used in the cropping model")
-
-    parser.add_argument('--cropping_model_entropy_threshold', type=float, default=0.05,
-                        help="A threshold determines whether the prediction should be filter out before the internal ensemble.")
-    parser.add_argument('--save_entropy_list', action=argparse.BooleanOptionalAction,
-                        help="Save the entropy list")
-    parser.add_argument('--no_batch_size_limitation', action=argparse.BooleanOptionalAction,
-                        help="If we want to use all of the sample with the predicted attention score greater than the threshold"
-                             "Don't limit the number of the samples used for internal ensemble")
 
     # Setup CUDA, GPU & distributed training
     if args.local_rank == -1:
