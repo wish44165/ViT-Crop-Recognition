@@ -1,13 +1,7 @@
-# ViT - Crop Recognition
-農地作物現況調查影像辨識競賽 - 春季賽:AI作物影響判釋
-
-### [Competitoin Link](https://aidea-web.tw/topic/93c8c26b-0e96-44bc-9a53-1c96353ad340)
-### [Google Drive](https://drive.google.com/drive/folders/1dOIBsU-zn1JYotF7JEbUyBPG6o2qImyy)
-### [HackMD](https://hackmd.io/@x-eSC_X5SMuQbmfwqUOwsQ/ryaRo42Mq)
+## [農地作物現況調查影像辨識競賽 - 春季賽:AI作物影響判釋](https://aidea-web.tw/topic/93c8c26b-0e96-44bc-9a53-1c96353ad340)
 
 
 ## Setup
-
 
 <details>
 
@@ -19,8 +13,6 @@ conda activate Crop
 ```
 
 </details>
-
-
 
 
 <details>
@@ -35,8 +27,6 @@ pip install -r requirements.txt
 </details>
 
 
-
-
 <details>
 
 <summary>A PyTorch Extension (Apex)</summary>
@@ -48,8 +38,6 @@ python setup.py install
 ```
 
 </details>
-
-
 
 
 <details>
@@ -83,8 +71,6 @@ wget https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/{MODEL_N
 </details>
 
 
-
-
 <details>
 
 <summary>Get Data</summary>
@@ -104,8 +90,6 @@ wget https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/{MODEL_N
 ![image](https://github.com/TW-yuhsi/ViT-Crop-Recognition/blob/main/figures/stage%201%20data.png)
 
 </details>
-
-
 
 
 <details>
@@ -894,12 +878,5 @@ In this part, we take the best configuration in the last section as the baseline
 
 
 
-## Citation
-```
-@article{
-    title  = {Crop classification},
-    author = {Yu-Hsi Chen, Jiun-Han Chen, Yu-Kai Chen, Kuan-Wei Zeng, Yang Tseng},
-    url    = {https://github.com/TW-yuhsi/ViT-Crop-Recognition},
-    year   = {2022}
-}
-```
+## Members
+- Yu-Hsi Chen, Jiun-Han Chen, Yu-Kai Chen, Kuan-Wei Zeng, Yang Tseng
